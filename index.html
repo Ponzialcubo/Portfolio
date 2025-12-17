@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio de Sergio Contreras - Técnico Superior DAM & ASIR">
+    <title>Sergio Contreras | Portfolio Completo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-body: #0f172a;       /* Slate 900 */
+            --bg-card: #1e293b;       /* Slate 800 */
+            --primary: #38bdf8;       /* Sky 400 */
+            --accent: #818cf8;        /* Indigo 400 */
+            --text-main: #f1f5f9;     
+            --text-muted: #94a3b8;    
+            --border: rgba(255,255,255,0.1);
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56,189,248,0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(129,140,248,0.1) 0px, transparent 50%);
+        }
+
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        ul { list-style: none; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* --- NAV --- */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1.2rem 0;
+        }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; color: #fff; }
+        .logo span { color: var(--primary); }
+        
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { font-size: 0.95rem; font-weight: 500; color: var(--text-muted); position: relative; }
+        .nav-links a:hover { color: #fff; }
+
+        /* --- HERO --- */
+        .hero { padding: 180px 0 100px; text-align: center; }
+        
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 20px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 100px;
+            color: var(--primary);
+            font-size: 0.9rem; font-weight: 600; margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.25rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 3rem;
+        }
+
+        .btn-group { display: flex; gap: 15px; justify-content: center; }
+        
+        .btn {
+            padding: 14px 32px; border-radius: 12px; font-weight: 600; font-size: 1rem;
+            display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .btn-primary {
+            background: var(--primary); color: #0f172a;
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(56, 189, 248, 0.5); }
+        
+        .btn-outline {
+            background: transparent; border: 1px solid var(--border); color: #fff;
+        }
+        .btn-outline:hover { border-color: var(--text-muted); background: rgba(255,255,255,0.05); }
+
+        /* --- SECCIONES COMUNES --- */
+        section { padding: 80px 0; border-top: 1px solid var(--border); }
+        .section-header { margin-bottom: 3rem; max-width: 800px; }
+        .section-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -1px; }
+        .section-desc { font-size: 1.1rem; color: var(--text-muted); }
+
+        /* --- SOBRE MÍ (TEXTO) --- */
+        .about-content {
+            background: var(--bg-card); padding: 40px; border-radius: 20px;
+            border: 1px solid var(--border); line-height: 1.8; color: var(--text-muted);
+        }
+        .about-content strong { color: #fff; }
+
+        /* --- SKILLS GRID (Hard & Soft) --- */
+        .skills-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        
+        .skill-column h3 { font-size: 1.5rem; margin-bottom: 20px; color: #fff; display: flex; align-items: center; gap: 10px; }
+        
+        .skill-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        
+        .skill-item {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            padding: 15px; border-radius: 12px; text-align: center; font-weight: 500; font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .skill-item:hover { border-color: var(--primary); background: rgba(56, 189, 248, 0.05); color: #fff; }
+
+        /* --- PROYECTOS (ESTILO MOCKUP FLOTANTE) --- */
+        .project-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 45% 55%; 
+            margin-bottom: 4rem;
+            transition: 0.3s;
+        }
+        
+        .project-card:hover { border-color: rgba(56, 189, 248, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+
+        .project-visual {
+            background: #111827;
+            padding: 30px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 300px; 
+            object-fit: cover; 
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4); 
+            transition: transform 0.5s ease;
+            filter: brightness(0.9);
+        }
+        
+        .project-card:hover .project-img { transform: scale(1.03); filter: brightness(1); }
+
+        .project-content { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        
+        /* Etiquetas de tipo de proyecto */
+        .project-type {
+            font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 10px; display: block;
+        }
+
+        .tech-list { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .tech-pill {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            padding: 6px 12px; border-radius: 6px;
+            background: rgba(56, 189, 248, 0.1); color: var(--primary);
+        }
+
+        .project-title { font-size: 1.8rem; margin-bottom: 1rem; font-weight: 700; color: #fff; }
+        .project-desc { color: var(--text-muted); margin-bottom: 2rem; font-size: 1rem; }
+
+        /* --- TRAYECTORIA --- */
+        .timeline { border-left: 2px solid #334155; padding-left: 2rem; max-width: 800px; margin-top: 2rem; }
+        .timeline-item { position: relative; margin-bottom: 3rem; }
+        .timeline-dot {
+            position: absolute; left: -41px; top: 5px;
+            width: 20px; height: 20px; background: var(--bg-body);
+            border: 4px solid var(--accent); border-radius: 50%;
+        }
+        .timeline-card {
+            background: rgba(255,255,255,0.02); padding: 25px; border-radius: 16px; border: 1px solid var(--border);
+        }
+        .year { font-family: monospace; color: var(--primary); font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 5px; }
+
+        /* --- CONTACTO --- */
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 2rem; }
+        .contact-card {
+            background: var(--bg-card); padding: 25px; border-radius: 16px; border: 1px solid var(--border);
+            text-align: center; transition: 0.3s;
+        }
+        .contact-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .contact-icon { font-size: 1.5rem; margin-bottom: 15px; display: block; }
+        
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .skills-container { grid-template-columns: 1fr; }
+            .project-card { grid-template-columns: 1fr; }
+            .project-visual { border-right: none; border-bottom: 1px solid var(--border); padding: 20px; }
+            .project-img { height: 220px; }
+            .hero h1 { font-size: 3rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container nav-inner">
+            <div class="logo">Sergio<span>Contreras</span></div>
+            <div class="nav-links">
+                <a href="#sobre-mi">Sobre mí</a>
+                <a href="#skills">Habilidades</a>
+                <a href="#proyectos">Proyectos</a>
+                <a href="#formacion">Formación</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+            <a href="#contacto" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.9rem;">Hablemos</a>
+        </div>
+    </nav>
+
+    <header class="hero container">
+        <div class="badge">Disponible para trabajar</div>
+        <h1>
+            Doble Grado Superior: <br>
+            ASIR + DAM
+        </h1>
+        <p>
+            Combino la capacidad de gestionar infraestructura crítica con el desarrollo de software moderno. <br>
+            Especializándome en Data Analytics para decisiones inteligentes.
+        </p>
+        <div class="btn-group">
+            
+            <a href="CurriculumCV.pdf" download class="btn btn-primary">
+                Descargar CV
+            </a>
+            
+            <a href="#proyectos" class="btn btn-outline">
+                Ver Portfolio
+            </a>
+        </div>
+    </header>
+
+    <section id="sobre-mi" class="container">
+        <div class="section-header">
+            <h2 class="section-title">Sobre Mí</h2>
+        </div>
+        <div class="about-content">
+            <p>
+                Soy un profesional apasionado por la tecnología y la inteligencia artificial. Mi trayectoria es un híbrido potente: comencé en <strong>Sistemas (ASIR)</strong>, entendiendo las "tripas" de servidores y redes, y evolucioné hacia el <strong>Desarrollo de Software (DAM)</strong> para crear soluciones propias.
+            </p>
+            <br>
+            <p>
+                Actualmente, complemento mi perfil técnico con un <strong>Máster en Data & Analytics</strong>. Me defino por mi proactividad y capacidad de aprendizaje continuo, buscando siempre aplicar mis habilidades analíticas en proyectos innovadores y desafiantes.
+            </p>
+        </div>
+    </section>
+
+    <section id="skills" class="container">
+        <div class="section-header">
+            <h2 class="section-title">Habilidades</h2>
+            <p class="section-desc">Competencias técnicas y personales desarrolladas en mi trayectoria.</p>
+        </div>
+
+        <div class="skills-container">
+            <div class="skill-column">
+                <h3>🛠️ Hard Skills (Tecnología)</h3>
+                <div class="skill-list">
+                    <div class="skill-item">Java / Kotlin</div>
+                    <div class="skill-item">Android Dev</div>
+                    <div class="skill-item">Python (Data)</div>
+                    <div class="skill-item">SQL / MySQL</div>
+                    <div class="skill-item">Administración Linux</div>
+                    <div class="skill-item">Redes & Seguridad</div>
+                </div>
+            </div>
+
+            <div class="skill-column">
+                <h3>🤝 Soft Skills (Personales)</h3>
+                <div class="skill-list">
+                    <div class="skill-item">Resolución de Problemas</div>
+                    <div class="skill-item">Trabajo en Equipo</div>
+                    <div class="skill-item">Gestión bajo Presión</div>
+                    <div class="skill-item">Liderazgo</div>
+                    <div class="skill-item">Pensamiento Crítico</div>
+                    <div class="skill-item">Adaptabilidad</div>
+                </div>
+                <p style="margin-top:15px; font-size:0.85rem; color:var(--text-muted); padding:10px; border-left:2px solid var(--accent);">
+                    *Habilidades blandas perfeccionadas gracias a mi experiencia en logística (Amazon) y arbitraje deportivo.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="proyectos" class="container">
+        <div class="section-header">
+            <h2 class="section-title">Proyectos</h2>
+            <p class="section-desc">Selección de trabajos académicos y personales.</p>
+        </div>
+
+        <article class="project-card">
+            <div class="project-visual">
+                <img src="https://images.unsplash.com/photo-1556816214-51c1d8562957?q=80&w=1000&auto=format&fit=crop" alt="Gym App" class="project-img">
+            </div>
+            <div class="project-content">
+                <span class="project-type">PROYECTO ACADÉMICO / PROFESIONAL</span>
+                <div class="tech-list">
+                    <span class="tech-pill">Kotlin</span>
+                    <span class="tech-pill">Android Studio</span>
+                    <span class="tech-pill">Firebase</span>
+                </div>
+                <h3 class="project-title">GymTrack Pro</h3>
+                <p class="project-desc">
+                    Aplicación móvil nativa para la gestión integral de entrenamientos. Soluciona la pérdida de datos en papel mediante sincronización en la nube y visualización de progreso.
+                </p>
+                <a href="https://github.com/Ponzialcubo" target="_blank" style="color:var(--primary); font-weight:600;">Ver Ficha en GitHub &rarr;</a>
+            </div>
+        </article>
+
+        <article class="project-card">
+            <div class="project-visual">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop" alt="Logistics Dashboard" class="project-img">
+            </div>
+            <div class="project-content">
+                <span class="project-type">PROYECTO ACADÉMICO / PROFESIONAL</span>
+                <div class="tech-list">
+                    <span class="tech-pill">Java</span>
+                    <span class="tech-pill">JavaFX</span>
+                    <span class="tech-pill">MySQL</span>
+                </div>
+                <h3 class="project-title">StockManager Enterprise</h3>
+                <p class="project-desc">
+                    Sistema de escritorio para logística de almacenes. Implementa arquitectura MVC, gestión eficiente de bases de datos relacionales y generación automática de reportes.
+                </p>
+                <a href="https://github.com/Ponzialcubo" target="_blank" style="color:var(--primary); font-weight:600;">Ver Ficha en GitHub &rarr;</a>
+            </div>
+        </article>
+
+        <article class="project-card">
+            <div class="project-visual">
+                <img src="https://images.unsplash.com/photo-1616077611355-d4087183d885?q=80&w=1000&auto=format&fit=crop" alt="Finance App" class="project-img">
+            </div>
+            <div class="project-content">
+                <span class="project-type">PROYECTO PERSONAL</span>
+                <div class="tech-list">
+                    <span class="tech-pill">Kotlin</span>
+                    <span class="tech-pill">Room DB</span>
+                    <span class="tech-pill">WorkManager</span>
+                </div>
+                <h3 class="project-title">SubTracker App</h3>
+                <p class="project-desc">
+                    Desarrollo personal para solucionar el control de gastos recurrentes. App que audita suscripciones y notifica pagos próximos usando servicios en segundo plano.
+                </p>
+                <a href="https://github.com/Ponzialcubo" target="_blank" style="color:var(--primary); font-weight:600;">Ver Ficha en GitHub &rarr;</a>
+            </div>
+        </article>
+
+    </section>
+
+    <section id="formacion" class="container">
+        <div class="section-header">
+            <h2 class="section-title">Formación Académica</h2>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="year">2024 - ACTUALIDAD</span>
+                    <h3>Máster en Data & Analytics</h3>
+                    <p style="color:var(--text-muted)">The Power Prometeo</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="year">2024 - ACTUALIDAD</span>
+                    <h3>Grado Superior Desarrollo de Apps (DAM)</h3>
+                    <p style="color:var(--text-muted)">The Power Prometeo</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="year">2019 - 2021</span>
+                    <h3>Grado Superior Administración Sistemas (ASIR)</h3>
+                    <p style="color:var(--text-muted)">C.F.P Inglan</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="container">
+        <div class="section-header">
+            <h2 class="section-title">Contacta Conmigo</h2>
+            <p class="section-desc">¿Interesado en mi perfil híbrido? Hablemos.</p>
+        </div>
+
+        <div class="contact-grid">
+            <a href="mailto:ponzialcubo@gmail.com" class="contact-card">
+                <span class="contact-icon">📧</span>
+                <h4>Email</h4>
+                <p style="color:var(--text-muted); font-size:0.9rem;">ponzialcubo@gmail.com</p>
+            </a>
+            <a href="https://github.com/Ponzialcubo" target="_blank" class="contact-card">
+                <span class="contact-icon">💻</span>
+                <h4>GitHub</h4>
+                <p style="color:var(--text-muted); font-size:0.9rem;">/Ponzialcubo</p>
+            </a>
+            <a href="tel:+34604954309" class="contact-card">
+                <span class="contact-icon">📱</span>
+                <h4>Teléfono</h4>
+                <p style="color:var(--text-muted); font-size:0.9rem;">604 954 309</p>
+            </a>
+        </div>
+    </section>
+
+    <footer style="text-align:center; padding: 40px; margin-top: 40px; border-top: 1px solid var(--border); color:var(--text-muted); font-size:0.9rem;">
+        <p>&copy; 2025 Sergio Contreras Mora.</p>
+    </footer>
+
+</body>
+</html>
