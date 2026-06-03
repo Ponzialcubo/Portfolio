@@ -72,36 +72,78 @@ function BotText({ text }) {
 }
 
 export default function FloatingChat() {
-  const [open, setOpen]           = useState(false)
-  const [messages, setMessages]   = useState(INITIAL)
-  const [input, setInput]         = useState('')
-  const [typing, setTyping]       = useState(false)
-  const [exchanges, setExchanges] = useState(0)
-  const [badge, setBadge]         = useState(false)
-  const [showSend, setShowSend]   = useState(false)
-  const [sendForm, setSendForm]   = useState({ name: '', email: '' })
-  const [sendStatus, setSendStatus] = useState('idle') // idle | loading | done
-  const msgsRef    = useRef(null)
-  const inputRef   = useRef(null)
+  const [open, setOpen]             = useState(false)
+  const [started, setStarted]       = useState(false)   // pre-chat form completed
+  const [userData, setUserData]     = useState({ name: '', email: '' })
+  const [preForm, setPreForm]       = useState({ name: '', email: '' })
+  const [messages, setMessages]     = useState(INITIAL)
+  const [input, setInput]           = useState('')
+  const [typing, setTyping]         = useState(false)
+  const [exchanges, setExchanges]   = useState(0)
+  const [badge, setBadge]           = useState(false)
+  const [autoSent, setAutoSent]     = useState(false)
+  const msgsRef      = useRef(null)
+  const inputRef     = useRef(null)
   const hasOpenedRef = useRef(false)
 
-  // Scroll only inside the chat container
   useEffect(() => {
     if (!msgsRef.current) return
     msgsRef.current.scrollTop = msgsRef.current.scrollHeight
   }, [messages, typing])
 
-  // Show badge after 8s if user never opened the chat.
-  // Uses a ref instead of the `open` state to avoid stale closure.
   useEffect(() => {
     const t = setTimeout(() => { if (!hasOpenedRef.current) setBadge(true) }, 8000)
     return () => clearTimeout(t)
+  }, [])
+
+  // Abre el chat cuando el FAQ u otro componente dispara 'open-floating-chat'
+  useEffect(() => {
+    const handleOpenFromFAQ = () => {
+      hasOpenedRef.current = true
+      setOpen(true)
+      setBadge(false)
+    }
+    window.addEventListener('open-floating-chat', handleOpenFromFAQ)
+    return () => window.removeEventListener('open-floating-chat', handleOpenFromFAQ)
+  }, [])
+
+  const sendTranscript = useCallback(async (name, email, msgs) => {
+    if (!email || msgs.length <= 1) return
+    try {
+      const ep = import.meta.env.VITE_CHAT_ENDPOINT?.replace('/chat', '/send-conversation') || '/api/send-conversation'
+      await fetch(ep, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, messages: msgs }),
+      })
+    } catch {}
   }, [])
 
   const handleOpen = () => {
     hasOpenedRef.current = true
     setOpen(v => !v)
     setBadge(false)
+    setTimeout(() => inputRef.current?.focus(), 200)
+  }
+
+  // Auto-envía transcript al cerrar si hubo al menos 1 intercambio
+  const handleClose = useCallback(() => {
+    setOpen(false)
+    if (exchanges > 0 && !autoSent && userData.email) {
+      setAutoSent(true)
+      sendTranscript(userData.name, userData.email, messages)
+    }
+  }, [exchanges, autoSent, userData, messages, sendTranscript])
+
+  const handleStartChat = (e) => {
+    e.preventDefault()
+    const name = preForm.name.trim()
+    const email = preForm.email.trim()
+    if (!name || !email) return
+    setUserData({ name, email })
+    setStarted(true)
+    const firstName = name.split(' ')[0]
+    setMessages([{ id: 0, from: 'bot', text: `Hola ${firstName}, cuéntame qué proyecto tienes en mente.`, showCTA: false }])
     setTimeout(() => inputRef.current?.focus(), 200)
   }
 
@@ -122,7 +164,7 @@ export default function FloatingChat() {
         const res = await fetch(ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: q, history }),
+          body: JSON.stringify({ message: q, history, name: userData.name, email: userData.email }),
         })
         if (res.ok) {
           const data = await res.json()
@@ -143,27 +185,11 @@ export default function FloatingChat() {
     setMessages(m => [...m, { id: Date.now() + 1, from: 'bot', text: clean, showCTA: newEx >= 2 || !findAnswer(q) }])
   }, [input, typing, exchanges, messages])
 
-  // Detecta email y nombre del cliente en los mensajes para pre-rellenar el form
-  const detectedEmail = messages
-    .filter(m => m.from === 'user')
-    .map(m => m.text.match(EMAIL_REGEX)?.[0])
-    .find(Boolean) || ''
-
-  const handleSendConversation = async (e) => {
-    e.preventDefault()
-    setSendStatus('loading')
-    try {
-      const endpoint = import.meta.env.VITE_CHAT_ENDPOINT?.replace('/chat', '/send-conversation') || '/api/send-conversation'
-      await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...sendForm, messages }),
-      })
-      setSendStatus('done')
-    } catch {
-      setSendStatus('done')
-    }
-  }
+  const handleSendNow = useCallback(async () => {
+    if (autoSent || !userData.email) return
+    setAutoSent(true)
+    sendTranscript(userData.name, userData.email, messages)
+  }, [autoSent, userData, messages, sendTranscript])
 
   const handleKey = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
@@ -194,13 +220,41 @@ export default function FloatingChat() {
               <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 6px #10B981', flexShrink: 0 }} />
               <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: COLORS.textDim, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Asistente · en línea</span>
             </div>
-            <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: COLORS.textDim, cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', lineHeight: 1 }}>
+            <button onClick={handleClose} style={{ background: 'none', border: 'none', color: COLORS.textDim, cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', lineHeight: 1 }}>
               <CloseIcon />
             </button>
           </div>
 
-          {/* Messages */}
-          <div ref={msgsRef} style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 8px', display: 'flex', flexDirection: 'column', gap: 12, maxHeight: 320 }}>
+          {/* Pre-chat form — se muestra hasta que el usuario da sus datos */}
+          {!started && (
+            <form onSubmit={handleStartChat} style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <p style={{ margin: 0, fontFamily: FONTS.heading, fontSize: 15, fontWeight: 700, color: COLORS.textWhite, lineHeight: 1.4 }}>
+                Cuéntame tu proyecto
+              </p>
+              <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 12, color: COLORS.textMuted, lineHeight: 1.5 }}>
+                Déjame tus datos y te ayudo a definirlo antes de hablar con Sergio.
+              </p>
+              <input
+                required type="text" placeholder="Tu nombre"
+                value={preForm.name} onChange={e => setPreForm(f => ({ ...f, name: e.target.value }))}
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '10px 12px', fontFamily: FONTS.body, fontSize: 13, color: COLORS.textWhite, outline: 'none', boxSizing: 'border-box', width: '100%' }}
+              />
+              <input
+                required type="email" placeholder="Tu email"
+                value={preForm.email} onChange={e => setPreForm(f => ({ ...f, email: e.target.value }))}
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '10px 12px', fontFamily: FONTS.body, fontSize: 13, color: COLORS.textWhite, outline: 'none', boxSizing: 'border-box', width: '100%' }}
+              />
+              <button type="submit" style={{ fontFamily: FONTS.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0F1419', background: COLORS.accentCyan, border: 'none', borderRadius: 8, padding: '11px 0', cursor: 'pointer', width: '100%' }}>
+                Iniciar conversación →
+              </button>
+              <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 11, color: COLORS.textDim, textAlign: 'center', lineHeight: 1.4 }}>
+                Solo para que Sergio pueda contactarte. Sin spam.
+              </p>
+            </form>
+          )}
+
+          {/* Messages — solo visibles tras el pre-chat form */}
+          {started && <div ref={msgsRef} style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 8px', display: 'flex', flexDirection: 'column', gap: 12, maxHeight: 320 }}>
             {messages.map(msg => (
               <div key={msg.id}>
                 {msg.from === 'bot' ? (
@@ -227,7 +281,7 @@ export default function FloatingChat() {
               </div>
             ))}
             {typing && <TypingDots />}
-          </div>
+          </div>}
 
           {/* Suggestions (only at start) */}
           {messages.length <= 1 && (
@@ -243,11 +297,11 @@ export default function FloatingChat() {
             </div>
           )}
 
-          {/* Send to Sergio — aparece tras 3 intercambios */}
-          {exchanges >= 3 && !showSend && sendStatus !== 'done' && (
+          {/* Botón enviar a Sergio — aparece tras 2 intercambios, auto-envía y cierra */}
+          {started && exchanges >= 2 && !autoSent && (
             <div style={{ padding: '8px 14px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
               <button
-                onClick={() => { setShowSend(true); if (detectedEmail) setSendForm(f => ({ ...f, email: detectedEmail })) }}
+                onClick={() => { handleSendNow(); handleClose() }}
                 style={{ width: '100%', fontFamily: FONTS.body, fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: COLORS.accentCyan, background: 'rgba(0,217,255,0.07)', border: '1px solid rgba(0,217,255,0.25)', borderRadius: 7, padding: '8px 0', cursor: 'pointer', transition: 'background 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,217,255,0.13)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,217,255,0.07)'}
@@ -256,42 +310,14 @@ export default function FloatingChat() {
               </button>
             </div>
           )}
-
-          {/* Mini-formulario de envío */}
-          {showSend && sendStatus !== 'done' && (
-            <form onSubmit={handleSendConversation} style={{ padding: '12px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 12, color: COLORS.textMuted, lineHeight: 1.5 }}>
-                Sergio recibirá esta conversación y te contactará con un presupuesto real.
-              </p>
-              <input
-                required type="text" placeholder="Tu nombre"
-                value={sendForm.name} onChange={e => setSendForm(f => ({ ...f, name: e.target.value }))}
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 7, padding: '8px 11px', fontFamily: FONTS.body, fontSize: 13, color: COLORS.textWhite, outline: 'none' }}
-              />
-              <input
-                required type="email" placeholder="Tu email"
-                value={sendForm.email} onChange={e => setSendForm(f => ({ ...f, email: e.target.value }))}
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 7, padding: '8px 11px', fontFamily: FONTS.body, fontSize: 13, color: COLORS.textWhite, outline: 'none' }}
-              />
-              <button
-                type="submit" disabled={sendStatus === 'loading'}
-                style={{ fontFamily: FONTS.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0F1419', background: sendStatus === 'loading' ? 'rgba(0,217,255,0.5)' : COLORS.accentCyan, border: 'none', borderRadius: 7, padding: '9px 0', cursor: sendStatus === 'loading' ? 'default' : 'pointer' }}
-              >
-                {sendStatus === 'loading' ? 'Enviando...' : 'Enviar a Sergio →'}
-              </button>
-            </form>
-          )}
-
-          {/* Confirmación */}
-          {sendStatus === 'done' && (
-            <div style={{ padding: '12px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
-              <p style={{ margin: '0 0 4px', fontFamily: FONTS.heading, fontSize: 14, fontWeight: 700, color: '#10B981' }}>Enviado ✓</p>
-              <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 12, color: COLORS.textMuted, lineHeight: 1.5 }}>Sergio revisará la conversación y te contactará hoy.</p>
+          {started && autoSent && (
+            <div style={{ padding: '10px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
+              <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 12, color: '#10B981' }}>Enviado ✓ Sergio te contactará hoy.</p>
             </div>
           )}
 
-          {/* Input */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', padding: '10px 12px', display: 'flex', gap: 8, flexShrink: 0 }}>
+          {/* Input — solo visible en conversación activa */}
+          {started && <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', padding: '10px 12px', display: 'flex', gap: 8, flexShrink: 0 }}>
             <input
               ref={inputRef}
               value={input}
@@ -307,7 +333,7 @@ export default function FloatingChat() {
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke={input.trim() && !typing ? '#0F1419' : COLORS.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
-          </div>
+          </div>}
         </div>
       )}
 

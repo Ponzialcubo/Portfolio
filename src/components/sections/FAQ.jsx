@@ -116,22 +116,32 @@ export default function FAQ() {
     }
 
     // Keyword-matching fallback (no API key needed)
+    const noMatch = !botText && !findAnswer(q)
     if (!botText) {
       const match = findAnswer(q)
-      botText = match
-        ? match.answer
-        : 'Buena pregunta. Para darte una respuesta personalizada sobre tu proyecto, lo mejor es que hablemos directamente. Te respondo en menos de 24 horas.'
+      botText = match ? match.answer : null
     }
 
-    // Strip markdown bold/italic so **text** doesn't appear raw in the chat bubble
     const cleanText = (botText ?? '').replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')
 
     setTyping(false)
-    setMessages(m => [...m, {
-      id: Date.now() + 1, from: 'bot',
-      text: cleanText,
-      showCTA: newExchanges >= 2 || !findAnswer(q),
-    }])
+
+    if (noMatch) {
+      // No keyword match → invita al chat con IA
+      setMessages(m => [...m, {
+        id: Date.now() + 1, from: 'bot',
+        text: 'Esa pregunta es más específica de lo que puedo responder aquí. El asistente con IA puede ayudarte con más detalle — puedes abrirlo abajo.',
+        showCTA: false,
+        showAIButton: true,
+      }])
+    } else {
+      setMessages(m => [...m, {
+        id: Date.now() + 1, from: 'bot',
+        text: cleanText,
+        showCTA: newExchanges >= 2,
+        showAIButton: false,
+      }])
+    }
   }
 
   const handleKey = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() } }
@@ -185,17 +195,22 @@ export default function FAQ() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             {/* Chat window */}
             <div style={{
-              background: 'rgba(255,255,255,0.025)', border: `1.5px solid rgba(255,255,255,0.08)`,
+              background: '#0a1018',
+              border: '1.5px solid rgba(0,217,255,0.15)',
               borderRadius: '16px 16px 0 0', overflow: 'hidden',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
             }}>
               {/* Topbar */}
-              <div style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
-                <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: COLORS.textDim, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Asistente · en línea</span>
+              <div style={{ background: 'rgba(0,217,255,0.06)', borderBottom: '1px solid rgba(0,217,255,0.1)', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
+                  <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: COLORS.accentCyan, letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 600 }}>Asistente · en línea</span>
+                </div>
+                <span style={{ fontFamily: FONTS.mono, fontSize: 9, color: COLORS.textDim, letterSpacing: '0.1em' }}>SERGIOLAB AI</span>
               </div>
 
               {/* Messages */}
-              <div ref={chatContainerRef} style={{ height: 380, overflowY: 'auto', padding: '20px 18px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div ref={chatContainerRef} style={{ height: 460, overflowY: 'auto', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 18 }}>
                 {messages.map(msg => (
                   <div key={msg.id}>
                     {msg.from === 'bot' ? (
@@ -206,12 +221,17 @@ export default function FAQ() {
                             <p style={{ fontFamily: FONTS.body, fontSize: 14, color: COLORS.textLight, lineHeight: 1.65, margin: 0 }}>{msg.text}</p>
                           </div>
                           {msg.showCTA && (
-                            <a
-                              href="#contacto"
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, marginTop: 10, fontFamily: FONTS.body, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', textDecoration: 'none', color: COLORS.accentCyan, background: 'rgba(0,217,255,0.1)', border: '1.5px solid rgba(0,217,255,0.35)', padding: '8px 16px', borderRadius: 6 }}
-                            >
+                            <a href="#contacto" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, marginTop: 10, fontFamily: FONTS.body, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', textDecoration: 'none', color: COLORS.accentCyan, background: 'rgba(0,217,255,0.1)', border: '1.5px solid rgba(0,217,255,0.35)', padding: '8px 16px', borderRadius: 6 }}>
                               CONTACTAR →
                             </a>
+                          )}
+                          {msg.showAIButton && (
+                            <button
+                              onClick={() => window.dispatchEvent(new CustomEvent('open-floating-chat'))}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, marginTop: 10, fontFamily: FONTS.body, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0F1419', background: COLORS.accentCyan, border: 'none', padding: '8px 16px', borderRadius: 6, cursor: 'pointer' }}
+                            >
+                              ABRIR CHAT CON IA →
+                            </button>
                           )}
                         </div>
                       </div>
@@ -229,19 +249,19 @@ export default function FAQ() {
             </div>
 
             {/* Input */}
-            <div style={{ background: 'rgba(255,255,255,0.04)', border: '1.5px solid rgba(255,255,255,0.08)', borderTop: 'none', borderRadius: '0 0 16px 16px', padding: '14px 16px', display: 'flex', gap: 10 }}>
+            <div style={{ background: '#0a1018', border: '1.5px solid rgba(0,217,255,0.15)', borderTop: '1px solid rgba(0,217,255,0.08)', borderRadius: '0 0 16px 16px', padding: '14px 18px', display: 'flex', gap: 10, boxShadow: '0 8px 40px rgba(0,0,0,0.4)' }}>
               <input
                 ref={inputRef}
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKey}
                 placeholder="Escribe tu pregunta..."
-                style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '10px 14px', fontFamily: FONTS.body, fontSize: 14, color: COLORS.textWhite, outline: 'none' }}
+                style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 10, padding: '11px 16px', fontFamily: FONTS.body, fontSize: 14, color: COLORS.textWhite, outline: 'none' }}
               />
               <button
                 onClick={() => handleSend()}
                 disabled={!input.trim() || typing}
-                style={{ width: 44, height: 44, borderRadius: 10, border: 'none', cursor: input.trim() && !typing ? 'pointer' : 'default', background: input.trim() && !typing ? COLORS.accentCyan : 'rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background 0.2s', outline: 'none' }}
+                style={{ width: 46, height: 46, borderRadius: 10, border: 'none', cursor: input.trim() && !typing ? 'pointer' : 'default', background: input.trim() && !typing ? COLORS.accentCyan : 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background 0.2s', outline: 'none' }}
                 aria-label="Enviar"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
