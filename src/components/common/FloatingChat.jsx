@@ -22,9 +22,11 @@ function findAnswer(q) {
 }
 
 const ENDPOINT = import.meta.env.VITE_CHAT_ENDPOINT
-const INITIAL = [{ id: 0, from: 'bot', text: 'Hola, soy el asistente de SergioLab. ¿En qué puedo ayudarte?', showCTA: false }]
+const INITIAL = [{ id: 0, from: 'bot', text: 'Hola, soy el asistente de SergioLab. Cuéntame qué proyecto tienes en mente y te ayudo a definirlo.', showCTA: false }]
 
-const SUGGESTIONS = ['¿Cuánto cuesta una web?', '¿En cuánto tiempo?', '¿Incluye SEO?']
+const SUGGESTIONS = ['Quiero una tienda online', 'Necesito una web profesional', 'Tengo una idea, no sé por dónde empezar']
+
+const EMAIL_REGEX = /[\w.+-]+@[\w-]+\.[a-z]{2,}/i
 
 const BOT_ICON = (
   <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(0,217,255,0.15)', border: '1px solid rgba(0,217,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -141,6 +143,12 @@ export default function FloatingChat() {
     setMessages(m => [...m, { id: Date.now() + 1, from: 'bot', text: clean, showCTA: newEx >= 2 || !findAnswer(q) }])
   }, [input, typing, exchanges, messages])
 
+  // Detecta email y nombre del cliente en los mensajes para pre-rellenar el form
+  const detectedEmail = messages
+    .filter(m => m.from === 'user')
+    .map(m => m.text.match(EMAIL_REGEX)?.[0])
+    .find(Boolean) || ''
+
   const handleSendConversation = async (e) => {
     e.preventDefault()
     setSendStatus('loading')
@@ -239,7 +247,7 @@ export default function FloatingChat() {
           {exchanges >= 3 && !showSend && sendStatus !== 'done' && (
             <div style={{ padding: '8px 14px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
               <button
-                onClick={() => setShowSend(true)}
+                onClick={() => { setShowSend(true); if (detectedEmail) setSendForm(f => ({ ...f, email: detectedEmail })) }}
                 style={{ width: '100%', fontFamily: FONTS.body, fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: COLORS.accentCyan, background: 'rgba(0,217,255,0.07)', border: '1px solid rgba(0,217,255,0.25)', borderRadius: 7, padding: '8px 0', cursor: 'pointer', transition: 'background 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,217,255,0.13)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,217,255,0.07)'}
