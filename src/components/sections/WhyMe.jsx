@@ -1,9 +1,9 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useEffect } from 'react'
 import { COLORS, FONTS } from '../../utils/constants'
 import Container from '../common/Container'
+import PageBanner from '../common/PageBanner'
 import { credentials } from '../../data/credentials'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -54,28 +54,19 @@ export default function WhyMe() {
   }, [])
 
   return (
+    <div ref={sectionRef}>
+      <PageBanner
+        eyebrow="SOBRE MÍ"
+        title="SERGIO CONTRERAS"
+        subtitle="Desarrollador web full-stack y diseñador con base en Madrid. Del diseño en Figma al despliegue en producción, cuidando el rendimiento, el SEO y la conversión."
+        accent={COLORS.accentCyan}
+      />
+
     <section
-      ref={sectionRef}
       id="sobre-mi"
-      style={{ width: '100%', background: COLORS.bgPrimary, padding: 'clamp(72px, 10vh, 120px) 0' }}
+      style={{ width: '100%', background: COLORS.bgPrimary, padding: 'clamp(52px, 8vh, 88px) 0' }}
     >
       <Container>
-        {/* ── Eyebrow + H2 ─────────────────────────────────────── */}
-        <div style={{ marginBottom: 'clamp(48px, 7vh, 72px)' }}>
-          <p style={{ fontFamily: FONTS.mono, fontSize: 11, fontWeight: 500, letterSpacing: '0.26em', color: COLORS.accentCyan, textTransform: 'uppercase', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ width: 22, height: 1, background: COLORS.accentCyan, opacity: 0.55, display: 'inline-block' }} />
-            SOBRE MÍ
-          </p>
-          <h1 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: 800, color: COLORS.textWhite, letterSpacing: '-0.025em', lineHeight: 0.95, margin: '0 0 24px', textTransform: 'uppercase' }}>
-            SERGIO CONTRERAS
-          </h1>
-          <p style={{ fontFamily: FONTS.body, fontSize: 'clamp(16px, 1.8vw, 20px)', color: COLORS.textMuted, lineHeight: 1.75, maxWidth: 640, margin: 0 }}>
-            Desarrollador web full-stack y diseñador con base en Madrid. Llevo cada proyecto de principio a fin —
-            del diseño en Figma al despliegue en producción — cuidando el rendimiento, el SEO/AEO y la conversión.
-            Mi objetivo no es solo entregar una web, sino que tu negocio tenga más clientes.
-          </p>
-        </div>
-
         {/* ── Dos columnas: stats + experiencia ─────────────────── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1.2fr)', gap: 'clamp(40px, 6vw, 80px)', marginBottom: 'clamp(48px, 7vh, 72px)' }} className="about-cols">
 
@@ -177,5 +168,6 @@ export default function WhyMe() {
         }
       `}</style>
     </section>
+    </div>
   )
 }

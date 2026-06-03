@@ -114,7 +114,7 @@ export default function ServiceCard({ service }) {
           Pregunta tu presupuesto
         </span>
         <a
-          href="#contacto"
+          href="/contacto"
           onMouseEnter={() => setBtnHov(true)}
           onMouseLeave={() => setBtnHov(false)}
           style={{

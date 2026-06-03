@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import gsap from 'gsap'
 import { COLORS, FONTS } from '../../utils/constants'
 import Container from '../common/Container'
+import PageBanner from '../common/PageBanner'
 import { steps } from '../../data/howItWorks'
 import { useScrollAnimations } from '../../hooks/useScrollAnimations'
 
@@ -67,27 +68,23 @@ export default function HowItWorks() {
   const Icon = ICONS[step.icon]
 
   return (
+    <div ref={sectionRef}>
+      <PageBanner
+        eyebrow="CÓMO TRABAJO"
+        title="EL PROCESO"
+        subtitle="De la llamada inicial al deploy — 4 pasos, sin sorpresas, con fechas reales desde el primer día."
+        accent={COLORS.accentCyan}
+      />
+
     <section
-      ref={sectionRef}
       id="proceso"
       style={{
         width: '100%',
         background: COLORS.bgSecondary,
-        padding: 'clamp(72px, 10vh, 120px) 0',
+        padding: 'clamp(52px, 8vh, 80px) 0',
       }}
     >
       <Container>
-        {/* Header */}
-        <div style={{ marginBottom: 'clamp(40px, 6vh, 56px)' }}>
-          <p style={{ fontFamily: FONTS.mono, fontSize: 11, fontWeight: 500, letterSpacing: '0.26em', color: COLORS.accentCyan, textTransform: 'uppercase', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ width: 22, height: 1, background: COLORS.accentCyan, opacity: 0.55, display: 'inline-block' }} />
-            CÓMO TRABAJO
-          </p>
-          <h2 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: 800, color: COLORS.textWhite, letterSpacing: '-0.025em', lineHeight: 0.95, margin: 0, textTransform: 'uppercase' }}>
-            EL PROCESO
-          </h2>
-        </div>
-
         {/* Step tabs */}
         <div style={{ display: 'flex', gap: 0, marginBottom: 'clamp(28px, 4vh, 40px)', borderBottom: `1px solid ${COLORS.border}` }}>
           {steps.map((s, i) => (
@@ -247,7 +244,7 @@ export default function HowItWorks() {
             ¿Listo para empezar?{' '}
             <span style={{ color: COLORS.textLight }}>Primera llamada gratuita, sin compromiso.</span>
           </p>
-          <a href="#contacto" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: FONTS.body, fontSize: 13, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', textDecoration: 'none', color: COLORS.accentCyan, background: 'rgba(0,217,255,0.08)', border: '1.5px solid rgba(0,217,255,0.35)', padding: '10px 22px', borderRadius: 6, whiteSpace: 'nowrap' }}>
+          <a href="/contacto" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: FONTS.body, fontSize: 13, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', textDecoration: 'none', color: COLORS.accentCyan, background: 'rgba(0,217,255,0.08)', border: '1.5px solid rgba(0,217,255,0.35)', padding: '10px 22px', borderRadius: 6, whiteSpace: 'nowrap' }}>
             HABLEMOS →
           </a>
         </div>
@@ -259,11 +256,37 @@ export default function HowItWorks() {
           .process-layout > *:last-child { display: none; }
         }
         @media (max-width: 560px) {
-          #proceso [role="tab"], #proceso button[aria-selected] {
+          #proceso button[aria-selected] {
             padding: 10px 12px !important; font-size: 9px !important;
           }
         }
       `}</style>
     </section>
+
+    {/* ── Timeline visual overview — todos los pasos ────────── */}
+    <section style={{ background: COLORS.bgPrimary, borderTop: '1px solid rgba(255,255,255,0.05)', padding: 'clamp(44px,7vh,72px) 0' }}>
+      <Container>
+        <p style={{ fontFamily: FONTS.mono, fontSize: 10, letterSpacing: '0.2em', color: COLORS.textDim, textTransform: 'uppercase', textAlign: 'center', margin: '0 0 clamp(28px,4vh,44px)' }}>
+          Visión general
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, position: 'relative' }} className="timeline-overview">
+          {/* connector line */}
+          <div aria-hidden="true" style={{ position: 'absolute', top: 28, left: '12.5%', right: '12.5%', height: 1, background: 'linear-gradient(90deg, rgba(0,217,255,0.3), rgba(139,92,246,0.3), rgba(16,185,129,0.3), rgba(245,158,11,0.3))' }} />
+          {steps.map((s, i) => (
+            <div key={s.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '0 8px', textAlign: 'center', cursor: 'pointer' }} onClick={() => {}}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: `${s.accent}12`, border: `2px solid ${s.accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1, position: 'relative', flexShrink: 0 }}>
+                <span style={{ fontFamily: FONTS.heading, fontWeight: 800, fontSize: 16, color: s.accent }}>{s.number}</span>
+              </div>
+              <div>
+                <p style={{ fontFamily: FONTS.heading, fontSize: 14, fontWeight: 700, color: COLORS.textWhite, margin: '0 0 4px', lineHeight: 1.3 }}>{s.title}</p>
+                <p style={{ fontFamily: FONTS.mono, fontSize: 9.5, color: s.accent, letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>{s.subtitle.split(' · ')[0]}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+      <style>{`@media (max-width: 540px) { .timeline-overview { grid-template-columns: repeat(2,1fr) !important; } }`}</style>
+    </section>
+    </div>
   )
 }
