@@ -70,14 +70,17 @@ function BotText({ text }) {
 }
 
 export default function FloatingChat() {
-  const [open, setOpen]       = useState(false)
-  const [messages, setMessages] = useState(INITIAL)
-  const [input, setInput]     = useState('')
-  const [typing, setTyping]   = useState(false)
+  const [open, setOpen]           = useState(false)
+  const [messages, setMessages]   = useState(INITIAL)
+  const [input, setInput]         = useState('')
+  const [typing, setTyping]       = useState(false)
   const [exchanges, setExchanges] = useState(0)
-  const [badge, setBadge]     = useState(false)
-  const msgsRef = useRef(null)
-  const inputRef = useRef(null)
+  const [badge, setBadge]         = useState(false)
+  const [showSend, setShowSend]   = useState(false)
+  const [sendForm, setSendForm]   = useState({ name: '', email: '' })
+  const [sendStatus, setSendStatus] = useState('idle') // idle | loading | done
+  const msgsRef    = useRef(null)
+  const inputRef   = useRef(null)
   const hasOpenedRef = useRef(false)
 
   // Scroll only inside the chat container
@@ -137,6 +140,22 @@ export default function FloatingChat() {
     setTyping(false)
     setMessages(m => [...m, { id: Date.now() + 1, from: 'bot', text: clean, showCTA: newEx >= 2 || !findAnswer(q) }])
   }, [input, typing, exchanges, messages])
+
+  const handleSendConversation = async (e) => {
+    e.preventDefault()
+    setSendStatus('loading')
+    try {
+      const endpoint = import.meta.env.VITE_CHAT_ENDPOINT?.replace('/chat', '/send-conversation') || '/api/send-conversation'
+      await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...sendForm, messages }),
+      })
+      setSendStatus('done')
+    } catch {
+      setSendStatus('done')
+    }
+  }
 
   const handleKey = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
@@ -213,6 +232,53 @@ export default function FloatingChat() {
                   {s}
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* Send to Sergio — aparece tras 3 intercambios */}
+          {exchanges >= 3 && !showSend && sendStatus !== 'done' && (
+            <div style={{ padding: '8px 14px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <button
+                onClick={() => setShowSend(true)}
+                style={{ width: '100%', fontFamily: FONTS.body, fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: COLORS.accentCyan, background: 'rgba(0,217,255,0.07)', border: '1px solid rgba(0,217,255,0.25)', borderRadius: 7, padding: '8px 0', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,217,255,0.13)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,217,255,0.07)'}
+              >
+                Enviar conversación a Sergio →
+              </button>
+            </div>
+          )}
+
+          {/* Mini-formulario de envío */}
+          {showSend && sendStatus !== 'done' && (
+            <form onSubmit={handleSendConversation} style={{ padding: '12px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 12, color: COLORS.textMuted, lineHeight: 1.5 }}>
+                Sergio recibirá esta conversación y te contactará con un presupuesto real.
+              </p>
+              <input
+                required type="text" placeholder="Tu nombre"
+                value={sendForm.name} onChange={e => setSendForm(f => ({ ...f, name: e.target.value }))}
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 7, padding: '8px 11px', fontFamily: FONTS.body, fontSize: 13, color: COLORS.textWhite, outline: 'none' }}
+              />
+              <input
+                required type="email" placeholder="Tu email"
+                value={sendForm.email} onChange={e => setSendForm(f => ({ ...f, email: e.target.value }))}
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 7, padding: '8px 11px', fontFamily: FONTS.body, fontSize: 13, color: COLORS.textWhite, outline: 'none' }}
+              />
+              <button
+                type="submit" disabled={sendStatus === 'loading'}
+                style={{ fontFamily: FONTS.body, fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0F1419', background: sendStatus === 'loading' ? 'rgba(0,217,255,0.5)' : COLORS.accentCyan, border: 'none', borderRadius: 7, padding: '9px 0', cursor: sendStatus === 'loading' ? 'default' : 'pointer' }}
+              >
+                {sendStatus === 'loading' ? 'Enviando...' : 'Enviar a Sergio →'}
+              </button>
+            </form>
+          )}
+
+          {/* Confirmación */}
+          {sendStatus === 'done' && (
+            <div style={{ padding: '12px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
+              <p style={{ margin: '0 0 4px', fontFamily: FONTS.heading, fontSize: 14, fontWeight: 700, color: '#10B981' }}>Enviado ✓</p>
+              <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 12, color: COLORS.textMuted, lineHeight: 1.5 }}>Sergio revisará la conversación y te contactará hoy.</p>
             </div>
           )}
 

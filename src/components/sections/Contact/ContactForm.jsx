@@ -11,13 +11,6 @@ const PROJECT_TYPES = [
   { value: 'otro', label: 'Otro — cuéntame' },
 ]
 
-const BUDGETS = [
-  { value: '<800',   label: 'Hasta 800 €  — Landing sencilla' },
-  { value: '800-2k', label: '800 – 2.000 €  — Web corporativa' },
-  { value: '2-5k',   label: '2.000 – 5.000 €  — E-commerce / Sistema' },
-  { value: '>5k',    label: 'Más de 5.000 €  — Proyecto complejo' },
-  { value: 'nse',    label: 'No lo sé aún' },
-]
 
 const inputBase = {
   width: '100%', boxSizing: 'border-box',
@@ -51,7 +44,7 @@ function Field({ label, error, children }) {
 }
 
 export default function ContactForm() {
-  const [form, setForm] = useState({ name: '', email: '', projectType: '', budget: '', message: '' })
+  const [form, setForm] = useState({ name: '', email: '', projectType: '', message: '' })
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
   const [serverError, setServerError] = useState('')
@@ -75,9 +68,9 @@ export default function ContactForm() {
     if (!isValid) { setErrors(errs); return }
     setStatus('loading')
     try {
-      await sendContactForm({ ...form, projectType: form.projectType || 'No especificado', budget: form.budget || 'No especificado' })
+      await sendContactForm({ ...form, projectType: form.projectType || 'No especificado' })
       setStatus('success')
-      setForm({ name: '', email: '', projectType: '', budget: '', message: '' })
+      setForm({ name: '', email: '', projectType: '', message: '' })
     } catch (err) {
       setStatus('error'); setServerError(err.message)
     }
@@ -117,25 +110,15 @@ export default function ContactForm() {
         </Field>
       </div>
 
-      {/* Project type + Budget */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }} className="cf-row">
-        <Field label="Tipo de proyecto">
-          <select name="projectType" value={form.projectType} onChange={handle}
-            onFocus={() => setFocused('projectType')} onBlur={() => setFocused(null)}
-            style={{ ...fieldStyle('projectType'), cursor: 'pointer' }}>
-            <option value="">Seleccionar…</option>
-            {PROJECT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-          </select>
-        </Field>
-        <Field label="Presupuesto orientativo">
-          <select name="budget" value={form.budget} onChange={handle}
-            onFocus={() => setFocused('budget')} onBlur={() => setFocused(null)}
-            style={{ ...fieldStyle('budget'), cursor: 'pointer' }}>
-            <option value="">Seleccionar…</option>
-            {BUDGETS.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
-          </select>
-        </Field>
-      </div>
+      {/* Project type */}
+      <Field label="Tipo de proyecto">
+        <select name="projectType" value={form.projectType} onChange={handle}
+          onFocus={() => setFocused('projectType')} onBlur={() => setFocused(null)}
+          style={{ ...fieldStyle('projectType'), cursor: 'pointer' }}>
+          <option value="">Seleccionar…</option>
+          {PROJECT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+        </select>
+      </Field>
 
       {/* Message */}
       <Field label="Cuéntame tu proyecto" error={errors.message}>

@@ -91,32 +91,93 @@ function buildAutoReply(name) {
   const firstName = escHtml(name.split(' ')[0])
   return `<!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#0F1419;font-family:'Inter',system-ui,sans-serif;color:#E2E8F0">
-  <div style="max-width:540px;margin:0 auto;padding:40px 24px">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mensaje recibido — SergioLab</title></head>
+<body style="margin:0;padding:0;background:#080D12;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#E2E8F0">
 
-    <p style="margin:0 0 24px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#00D9FF">SERGIOLAB · DESARROLLO WEB</p>
+  <!-- Wrapper -->
+  <div style="max-width:560px;margin:0 auto;padding:0 0 40px">
 
-    <h1 style="margin:0 0 20px;font-size:26px;font-weight:800;color:#fff;line-height:1.2">
-      Mensaje recibido, ${firstName} 👋
-    </h1>
+    <!-- Header con barra de color -->
+    <div style="background:linear-gradient(135deg,#0F1419 0%,#0a1520 100%);border-bottom:2px solid #00D9FF;padding:32px 36px 28px">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            <p style="margin:0;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#00D9FF;font-weight:600">SERGIOLAB</p>
+            <p style="margin:2px 0 0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.25)">Desarrollo Web · Madrid</p>
+          </td>
+          <td align="right">
+            <div style="width:38px;height:38px;background:rgba(0,217,255,0.1);border:1.5px solid rgba(0,217,255,0.3);border-radius:10px;display:inline-flex;align-items:center;justify-content:center">
+              <span style="font-size:18px;line-height:1">💻</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
 
-    <p style="margin:0 0 16px;font-size:15px;color:#CBD5E1;line-height:1.7">
-      Gracias por escribir. He recibido tu consulta y te respondo hoy mismo —
-      normalmente en menos de 24 horas.
-    </p>
+    <!-- Cuerpo -->
+    <div style="background:#0F1419;padding:36px 36px 32px">
 
-    <p style="margin:0 0 32px;font-size:15px;color:#CBD5E1;line-height:1.7">
-      Si tienes más detalles que añadir o prefieres hablar directamente,
-      puedes responder a este email o escribirme a
-      <a href="mailto:info@sergiolab.es" style="color:#00D9FF;text-decoration:none">info@sergiolab.es</a>.
-    </p>
+      <h1 style="margin:0 0 8px;font-size:28px;font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.2">
+        Recibido, ${firstName}.
+      </h1>
+      <p style="margin:0 0 28px;font-size:13px;color:rgba(0,217,255,0.7);letter-spacing:.06em;text-transform:uppercase;font-weight:600">
+        Tu mensaje está en mis manos
+      </p>
 
-    <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:24px">
-      <p style="margin:0;font-size:14px;font-weight:700;color:#fff">Sergio Contreras</p>
-      <p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.4)">
-        Desarrollador Full-Stack &amp; Diseñador Web ·
-        <a href="https://sergiolab.es" style="color:#00D9FF;text-decoration:none">sergiolab.es</a>
+      <p style="margin:0 0 18px;font-size:15px;color:#CBD5E1;line-height:1.75">
+        Gracias por contactar. He recibido todos los detalles de tu proyecto
+        y te respondo personalmente hoy mismo.
+      </p>
+
+      <p style="margin:0 0 32px;font-size:15px;color:#CBD5E1;line-height:1.75">
+        Si quieres añadir algo más antes de que hablemos, responde directamente
+        a este email — llega directo a mí.
+      </p>
+
+      <!-- Qué pasa ahora -->
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:22px 24px;margin-bottom:32px">
+        <p style="margin:0 0 16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.3);font-weight:600">Qué pasa ahora</p>
+        ${[
+          ['01', 'Reviso tu proyecto', 'Leo los detalles que me has enviado y analizo el mejor enfoque.'],
+          ['02', 'Te escribo hoy', 'Te respondo con preguntas concretas o directamente con una propuesta.'],
+          ['03', 'Presupuesto cerrado', 'Sin sorpresas. Todo claro antes de empezar.'],
+        ].map(([n, title, desc]) => `
+        <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:14px">
+          <span style="flex-shrink:0;width:26px;height:26px;background:rgba(0,217,255,0.1);border:1px solid rgba(0,217,255,0.25);border-radius:6px;font-size:10px;font-weight:700;color:#00D9FF;display:flex;align-items:center;justify-content:center;letter-spacing:.04em">${n}</span>
+          <div>
+            <p style="margin:0 0 2px;font-size:13px;font-weight:600;color:#fff">${title}</p>
+            <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5">${desc}</p>
+          </div>
+        </div>`).join('')}
+      </div>
+
+      <!-- CTA -->
+      <div style="text-align:center">
+        <a href="https://sergiolab.es/portfolio"
+           style="display:inline-block;background:#00D9FF;color:#0a0f14;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:14px 32px;border-radius:8px;margin-bottom:12px">
+          VER PROYECTOS REALES →
+        </a>
+        <p style="margin:12px 0 0;font-size:12px;color:rgba(255,255,255,0.25)">Mientras tanto, echa un vistazo a lo que hemos construido</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#080D12;padding:20px 36px;border-top:1px solid rgba(255,255,255,0.05)">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            <p style="margin:0;font-size:13px;font-weight:700;color:#fff">Sergio Contreras</p>
+            <p style="margin:3px 0 0;font-size:11px;color:rgba(255,255,255,0.3)">Full-Stack Developer &amp; Web Designer</p>
+          </td>
+          <td align="right" style="vertical-align:middle">
+            <a href="https://sergiolab.es" style="font-size:11px;color:#00D9FF;text-decoration:none;letter-spacing:.06em">sergiolab.es</a>
+          </td>
+        </tr>
+      </table>
+      <p style="margin:16px 0 0;font-size:10px;color:rgba(255,255,255,0.15);line-height:1.5">
+        Recibiste este email porque usaste el formulario de contacto de sergiolab.es.
+        No es spam — te respondo en persona.
       </p>
     </div>
 
