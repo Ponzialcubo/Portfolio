@@ -1,224 +1,151 @@
-import { useState } from 'react'
 import { COLORS, FONTS } from '../../utils/constants'
 import Container from '../common/Container'
 import { navLinks } from '../../data/navigation'
+import { caseStudies } from '../../data/caseStudies'
 
 const EMAIL = 'info@sergiolab.es'
 
-const LEGAL_LINKS = [
+const LEGAL = [
   { label: 'Privacidad', href: '/privacy' },
   { label: 'Aviso Legal', href: '/terms' },
-  { label: 'Cookies',    href: '/cookies' },
+  { label: 'Cookies', href: '/cookies' },
 ]
 
-function MiniForm() {
-  const [email, setEmail]   = useState('')
-  const [msg, setMsg]       = useState('')
-  const [status, setStatus] = useState('idle')
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!email.trim() || !msg.trim()) return
-    setStatus('loading')
-    try {
-      const res = await fetch('https://formspree.io/f/xkoeqgpz', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'Contacto rápido', email, projectType: 'General', message: msg }),
-      })
-      if (!res.ok) throw new Error()
-      setStatus('success')
-      setEmail(''); setMsg('')
-    } catch {
-      setStatus('error')
-    }
-  }
-
-  if (status === 'success') {
-    return (
-      <div style={{
-        padding: '16px', borderRadius: 8, textAlign: 'center',
-        background: 'rgba(16,185,129,0.08)',
-        border: '1px solid rgba(16,185,129,0.25)',
-      }}>
-        <span style={{ fontFamily: FONTS.mono, fontSize: 11, color: '#10B981', letterSpacing: '0.1em' }}>
-          ✓ MENSAJE ENVIADO — TE RESPONDO PRONTO
-        </span>
-      </div>
-    )
-  }
-
-  const inputStyle = {
-    width: '100%', boxSizing: 'border-box',
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: 6, padding: '9px 13px',
-    fontFamily: FONTS.body, fontSize: 13,
-    color: COLORS.textWhite, outline: 'none',
-  }
-
-  return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <p style={{ fontFamily: FONTS.mono, fontSize: 9, letterSpacing: '0.2em', color: COLORS.textDim, textTransform: 'uppercase', margin: 0 }}>
-        Contacto rápido
-      </p>
-      <input
-        type="email" value={email} onChange={e => setEmail(e.target.value)}
-        placeholder="tu@email.com" required style={inputStyle}
-      />
-      <textarea
-        value={msg} onChange={e => setMsg(e.target.value)}
-        placeholder="¿En qué puedo ayudarte?" rows={3} required
-        style={{ ...inputStyle, resize: 'none', lineHeight: 1.55 }}
-      />
-      <button
-        type="submit"
-        disabled={status === 'loading'}
-        style={{
-          fontFamily: FONTS.body, fontSize: 11.5, fontWeight: 600,
-          letterSpacing: '0.08em', textTransform: 'uppercase',
-          color: COLORS.accentCyan,
-          background: 'rgba(0,217,255,0.08)',
-          border: '1.5px solid rgba(0,217,255,0.35)',
-          borderRadius: 6, padding: '9px 0', cursor: 'pointer',
-          transition: 'background 0.2s, border-color 0.2s',
-          width: '100%',
-          opacity: status === 'loading' ? 0.6 : 1,
-        }}
-      >
-        {status === 'loading' ? 'ENVIANDO...' : 'ENVIAR MENSAJE →'}
-      </button>
-      {status === 'error' && (
-        <p style={{ fontFamily: FONTS.body, fontSize: 11, color: '#EF4444', margin: 0 }}>
-          Error al enviar. Escríbeme directamente a {EMAIL}
-        </p>
-      )}
-      <style>{`
-        input::placeholder, textarea::placeholder { color: rgba(226,232,240,0.28); }
-        input:focus, textarea:focus { border-color: rgba(0,217,255,0.4) !important; }
-      `}</style>
-    </form>
-  )
-}
+const SOCIAL = [
+  {
+    label: 'LinkedIn',
+    href: 'https://linkedin.com/in/sergiocontreras-dev',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <rect x="2" y="9" width="4" height="12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    ),
+  },
+  {
+    label: 'GitHub',
+    href: 'https://github.com/Ponzialcubo',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+]
 
 export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer style={{
-      width: '100%',
-      background: '#080D12',
-      borderTop: `1px solid ${COLORS.border}`,
-      padding: 'clamp(44px, 6vh, 68px) 0 clamp(24px, 3vh, 36px)',
-    }}>
-      <Container>
+    <footer style={{ width: '100%', background: '#080D12', borderTop: `1px solid rgba(255,255,255,0.06)` }}>
 
-        {/* ── Main grid ─────────────────────────────────────────── */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1.6fr 1fr 1.2fr',
-          gap: 'clamp(32px, 4vw, 60px)',
-          marginBottom: 'clamp(32px, 5vh, 48px)',
-        }}
-          className="footer-grid"
-        >
-          {/* Col 1 — Brand + contact */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-            <a href="/" style={{ textDecoration: 'none' }}>
-              <span style={{ fontFamily: FONTS.heading, fontSize: 'clamp(14px, 1.4vw, 17px)', fontWeight: 800, color: COLORS.textWhite }}>
-                SERGIOLAB
-              </span>
-              <span style={{ fontFamily: FONTS.heading, fontSize: 'clamp(14px, 1.4vw, 17px)', fontWeight: 800, color: COLORS.accentCyan }}>
-                {' '}· DEVELOPER
-              </span>
-            </a>
-
-            <p style={{ fontFamily: FONTS.body, fontSize: 13, color: COLORS.textMuted, lineHeight: 1.6, margin: 0, maxWidth: 260 }}>
-              Landing pages, e-commerce y dashboards con análisis de datos mensual incluido.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* ── CTA band ────────────────────────────────────────────── */}
+      <div style={{ borderBottom: `1px solid rgba(255,255,255,0.06)` }}>
+        <Container>
+          <div style={{
+            padding: 'clamp(48px,7vh,80px) 0',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            gap: 'clamp(24px,4vw,48px)', flexWrap: 'wrap',
+          }}>
+            <div style={{ maxWidth: 560 }}>
+              <p style={{ fontFamily: FONTS.mono, fontSize: 10.5, letterSpacing: '0.2em', color: COLORS.accentCyan, textTransform: 'uppercase', margin: '0 0 14px' }}>
+                ¿Empezamos?
+              </p>
+              <h2 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: COLORS.textWhite, letterSpacing: '-0.025em', lineHeight: 1.1, margin: 0 }}>
+                Cuéntame tu proyecto.<br />
+                <span style={{ color: COLORS.accentCyan }}>Te respondo hoy.</span>
+              </h2>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-start' }}>
               <a
-                href={`mailto:${EMAIL}`}
+                href="#contacto"
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  fontFamily: FONTS.body, fontSize: 13,
-                  color: COLORS.accentCyan, textDecoration: 'none',
-                  transition: 'opacity 0.2s',
+                  display: 'inline-flex', alignItems: 'center', gap: 10,
+                  fontFamily: FONTS.body, fontSize: 13, fontWeight: 700,
+                  letterSpacing: '0.1em', textTransform: 'uppercase',
+                  textDecoration: 'none', color: '#0F1419',
+                  background: COLORS.accentCyan,
+                  padding: '14px 32px', borderRadius: 10,
+                  boxShadow: '0 4px 24px rgba(0,217,255,0.3)',
+                  transition: 'opacity 0.2s, transform 0.15s',
+                  whiteSpace: 'nowrap',
                 }}
-                onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
-                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'none' }}
               >
-                <span style={{ fontSize: 14 }}>✉️</span>
+                AGENDAR LLAMADA →
+              </a>
+              <a href={`mailto:${EMAIL}`} style={{ fontFamily: FONTS.body, fontSize: 13, color: COLORS.textDim, textDecoration: 'none', letterSpacing: '0.02em' }}
+                onMouseEnter={e => e.currentTarget.style.color = COLORS.textLight}
+                onMouseLeave={e => e.currentTarget.style.color = COLORS.textDim}
+              >
                 {EMAIL}
               </a>
-              <span style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                fontFamily: FONTS.body, fontSize: 13, color: COLORS.textMuted,
-              }}>
-                <span style={{ fontSize: 14 }}>📍</span>
-                MADRID · REMOTO / HÍBRIDO
-              </span>
             </div>
+          </div>
+        </Container>
+      </div>
 
-            {/* Social links */}
-            <div style={{ display: 'flex', gap: 10 }}>
-              {[
-                { label: 'LinkedIn', href: 'https://linkedin.com/in/sergiocontreras-dev' },
-                { label: 'GitHub',   href: 'https://github.com/Ponzialcubo' },
-              ].map(({ label, href }) => (
+      {/* ── Main footer grid ────────────────────────────────────── */}
+      <Container>
+        <div style={{
+          padding: 'clamp(40px,6vh,56px) 0 clamp(24px,3vh,32px)',
+          display: 'grid',
+          gridTemplateColumns: '1.8fr 1fr 1fr',
+          gap: 'clamp(32px,4vw,56px)',
+        }}
+          className="footer-cols"
+        >
+          {/* Col 1 — Brand */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <a href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
+              <span style={{ fontFamily: FONTS.heading, fontSize: 18, fontWeight: 800, color: COLORS.textWhite }}>SERGIOLAB</span>
+              <span style={{ fontFamily: FONTS.heading, fontSize: 18, fontWeight: 800, color: COLORS.accentCyan }}> · DEVELOPER</span>
+            </a>
+            <p style={{ fontFamily: FONTS.body, fontSize: 14, color: COLORS.textDim, lineHeight: 1.7, margin: 0, maxWidth: 280 }}>
+              Desarrollo web a medida para negocios. E-commerce, motores de reserva y paneles de gestión. Madrid · toda España.
+            </p>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {SOCIAL.map(s => (
                 <a
-                  key={label}
-                  href={href}
+                  key={s.label}
+                  href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={s.label}
                   style={{
-                    fontFamily: FONTS.mono, fontSize: 10, fontWeight: 600,
-                    letterSpacing: '0.1em', textTransform: 'uppercase',
-                    color: COLORS.textMuted, textDecoration: 'none',
-                    border: `1px solid ${COLORS.border}`,
-                    padding: '6px 12px', borderRadius: 6,
-                    transition: 'color 0.2s, border-color 0.2s',
+                    width: 38, height: 38, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: COLORS.textDim, border: `1px solid rgba(255,255,255,0.08)`,
+                    background: 'rgba(255,255,255,0.04)',
+                    transition: 'color 0.2s, border-color 0.2s, background 0.2s',
+                    textDecoration: 'none',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.color = COLORS.accentCyan; e.currentTarget.style.borderColor = 'rgba(0,217,255,0.35)' }}
-                  onMouseLeave={e => { e.currentTarget.style.color = COLORS.textMuted; e.currentTarget.style.borderColor = COLORS.border }}
+                  onMouseEnter={e => { e.currentTarget.style.color = COLORS.accentCyan; e.currentTarget.style.borderColor = 'rgba(0,217,255,0.35)'; e.currentTarget.style.background = 'rgba(0,217,255,0.06)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = COLORS.textDim; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
                 >
-                  {label}
+                  {s.icon}
                 </a>
               ))}
             </div>
-
-            {/* Availability pill */}
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: 'rgba(16,185,129,0.08)',
-              border: '1px solid rgba(16,185,129,0.25)',
-              borderRadius: 6, padding: '8px 14px',
-              alignSelf: 'flex-start',
-            }}>
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981', flexShrink: 0 }} />
-              <span style={{ fontFamily: FONTS.mono, fontSize: 9.5, color: '#10B981', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                Disponible para proyectos
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 6, padding: '7px 13px', alignSelf: 'flex-start' }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 7px #10B981', flexShrink: 0 }} />
+              <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: '#10B981', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                Disponible
               </span>
             </div>
           </div>
 
-          {/* Col 2 — Nav + stack */}
+          {/* Col 2 — Navegación + proyectos */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
             <div>
-              <p style={{ fontFamily: FONTS.mono, fontSize: 9, letterSpacing: '0.2em', color: COLORS.textDim, textTransform: 'uppercase', marginBottom: 14, marginTop: 0 }}>
-                Navegación
-              </p>
+              <p style={{ fontFamily: FONTS.mono, fontSize: 9.5, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase', margin: '0 0 14px' }}>Navegación</p>
               <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {navLinks.map(({ label, href }) => (
                   <li key={href}>
-                    <a href={href} style={{
-                      fontFamily: FONTS.body, fontSize: 14,
-                      color: COLORS.textMuted, textDecoration: 'none',
-                      transition: 'color 0.2s',
-                    }}
+                    <a href={href} style={{ fontFamily: FONTS.body, fontSize: 14, color: COLORS.textDim, textDecoration: 'none', transition: 'color 0.2s' }}
                       onMouseEnter={e => e.currentTarget.style.color = COLORS.textLight}
-                      onMouseLeave={e => e.currentTarget.style.color = COLORS.textMuted}
+                      onMouseLeave={e => e.currentTarget.style.color = COLORS.textDim}
                     >
                       {label}
                     </a>
@@ -226,59 +153,39 @@ export default function Footer() {
                 ))}
               </ul>
             </div>
-
-            <div>
-              <p style={{ fontFamily: FONTS.mono, fontSize: 9, letterSpacing: '0.2em', color: COLORS.textDim, textTransform: 'uppercase', marginBottom: 14, marginTop: 0 }}>
-                Stack
-              </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {['React', 'WordPress', 'Stripe', 'Figma', 'Power BI'].map(t => (
-                  <span key={t} style={{
-                    fontFamily: FONTS.mono, fontSize: 9, fontWeight: 600,
-                    letterSpacing: '0.1em', textTransform: 'uppercase',
-                    color: COLORS.accentCyan,
-                    background: 'rgba(0,217,255,0.07)',
-                    border: '1px solid rgba(0,217,255,0.18)',
-                    padding: '3px 8px', borderRadius: 4,
-                  }}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
 
-          {/* Col 3 — Mini form */}
+          {/* Col 3 — Proyectos */}
           <div>
-            <MiniForm />
+            <p style={{ fontFamily: FONTS.mono, fontSize: 9.5, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase', margin: '0 0 14px' }}>Proyectos</p>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {caseStudies.map(cs => (
+                <li key={cs.slug}>
+                  <a href={`/proyectos/${cs.slug}`} style={{ fontFamily: FONTS.body, fontSize: 14, color: COLORS.textDim, textDecoration: 'none', transition: 'color 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.color = COLORS.textLight}
+                    onMouseLeave={e => e.currentTarget.style.color = COLORS.textDim}
+                  >
+                    {cs.title.split('—')[0].trim()}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        {/* ── Bottom bar ──────────────────────────────────────────── */}
-        <div style={{ height: 1, background: COLORS.border, marginBottom: 20 }} />
-        <div style={{
-          display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
-        }}>
-          <p style={{ fontFamily: FONTS.mono, fontSize: 10.5, color: COLORS.textDim, margin: 0 }}>
-            © {year} SergioLab — Todos los derechos reservados
+        {/* Bottom bar */}
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
+        <div style={{ padding: 'clamp(16px,2.5vh,22px) 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <p style={{ fontFamily: FONTS.mono, fontSize: 10.5, color: 'rgba(255,255,255,0.2)', margin: 0 }}>
+            © {year} SergioLab · Sergio Contreras — Madrid, España
           </p>
-
-          {/* Legal page links */}
-          <nav aria-label="Información legal" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-            {LEGAL_LINKS.map(({ label, href }, i) => (
+          <nav aria-label="Legal" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+            {LEGAL.map(({ label, href }, i) => (
               <span key={href} style={{ display: 'flex', alignItems: 'center' }}>
-                {i > 0 && <span style={{ color: COLORS.textDim, margin: '0 8px', fontSize: 10 }}>·</span>}
-                <a
-                  href={href}
-                  style={{
-                    fontFamily: FONTS.mono, fontSize: 10.5,
-                    color: COLORS.textDim, textDecoration: 'none',
-                    transition: 'color 0.2s',
-                    letterSpacing: '0.05em',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.color = COLORS.textLight}
-                  onMouseLeave={e => e.currentTarget.style.color = COLORS.textDim}
+                {i > 0 && <span style={{ color: 'rgba(255,255,255,0.15)', margin: '0 10px', fontSize: 10 }}>·</span>}
+                <a href={href} style={{ fontFamily: FONTS.mono, fontSize: 10.5, color: 'rgba(255,255,255,0.2)', textDecoration: 'none', letterSpacing: '0.04em', transition: 'color 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = COLORS.textDim}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
                 >
                   {label}
                 </a>
@@ -286,15 +193,15 @@ export default function Footer() {
             ))}
           </nav>
         </div>
-
       </Container>
 
       <style>{`
-        @media (max-width: 900px) {
-          .footer-grid { grid-template-columns: 1fr 1fr !important; }
+        @media (max-width: 860px) {
+          .footer-cols { grid-template-columns: 1fr 1fr !important; }
+          .footer-cols > *:first-child { grid-column: 1 / -1; }
         }
-        @media (max-width: 560px) {
-          .footer-grid { grid-template-columns: 1fr !important; }
+        @media (max-width: 520px) {
+          .footer-cols { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </footer>
