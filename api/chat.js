@@ -3,7 +3,7 @@
 // Mantiene el API key en el servidor — nunca expuesto al cliente.
 // Variables de entorno: ANTHROPIC_API_KEY, ALLOWED_ORIGIN
 
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://sergiolab.es'
+const ALLOWED_ORIGIN = (process.env.ALLOWED_ORIGIN || 'https://sergiolab.es').replace(/['"]/g, '').trim()
 
 const SYSTEM_PROMPT = `Eres el asistente de SergioLab, el negocio de desarrollo web de Sergio Contreras en Madrid.
 Tu único objetivo: que el visitante acabe contactando con Sergio en info@sergiolab.es.

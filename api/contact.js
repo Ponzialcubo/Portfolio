@@ -2,7 +2,7 @@
 // Recibe el formulario de contacto del portfolio y envía un email via Resend.
 // Variable de entorno necesaria: RESEND_API_KEY
 
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://sergiolab.es'
+const ALLOWED_ORIGIN = (process.env.ALLOWED_ORIGIN || 'https://sergiolab.es').replace(/['"]/g, '').trim()
 const TO_EMAIL       = process.env.CONTACT_EMAIL   || 'info@sergiolab.es'
 const FROM_EMAIL     = 'SergioLab Portfolio <noreply@sergiolab.es>'
 
