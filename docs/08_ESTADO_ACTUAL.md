@@ -2,6 +2,20 @@
 
 > Actualizar al final de cada sesión: qué se hizo, qué se decidió, qué queda.
 
+## Sesión 2026-06-03 (c) — SEO técnico: prerender + server config
+- **Causa raíz detectada:** la SPA servía HTML vacío → Seobility daba 42% on-page,
+  Link structure 0%, contenido bajo, sin estructura.
+- **`scripts/prerender.js`** (nuevo): tras `vite build`, inyecta contenido estático
+  semántico (H1/H2/H3, párrafos, listas, enlaces) en `#root` de `dist/index.html`
+  desde `src/data/*`. `package.json` build = `vite build && node scripts/prerender.js`.
+  Resultado: 1 H1, 8 H2, 27 H3, ~1.200 palabras, enlaces internos (legales incluidos).
+- **`public/.htaccess`** ampliado: HTTPS+non-www canónico, GZip, caché, charset UTF-8,
+  cabeceras de seguridad, Cache-Control inmutable para assets.
+- **Meta description** acortada a <160 caracteres.
+- **Build** ✅ (prerender confirma inyección). dist/ listo para subir a Hostinger.
+- **Pendiente que NO depende del código:** External factors (3%) = backlinks/off-page
+  (alta en directorios, Google Business, LinkedIn, redes). No sube solo con código.
+
 ## Sesión 2026-06-03 (b) — Ajustes de contacto, URL y 4º proyecto
 - **Teléfono eliminado** de toda la web (Contact, Footer, schema Person y
   ProfessionalService). Contacto público = solo email. Se mantienen LinkedIn/GitHub.

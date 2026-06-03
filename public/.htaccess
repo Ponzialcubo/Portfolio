@@ -1,6 +1,58 @@
-# SPA routing — redirect all non-file requests to index.html (Hostinger / Apache)
-Options -MultiViews
+# ── Canonical host: forzar HTTPS y quitar www → https://sergiolab.es ─────────
 RewriteEngine On
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://sergiolab.es%{REQUEST_URI} [L,R=301]
+
+# ── SPA routing — todo lo que no sea un archivo/carpeta real → index.html ─────
+Options -MultiViews
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ /index.html [L]
+
+# ── Charset por defecto ──────────────────────────────────────────────────────
+AddDefaultCharset UTF-8
+
+# ── Compresión GZip ──────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml \
+    application/javascript application/json application/xml \
+    image/svg+xml application/rss+xml
+</IfModule>
+
+# ── Caché de navegador ───────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault                          "access plus 1 month"
+  ExpiresByType text/html                 "access plus 0 seconds"
+  ExpiresByType text/css                  "access plus 1 year"
+  ExpiresByType application/javascript    "access plus 1 year"
+  ExpiresByType image/svg+xml             "access plus 1 month"
+  ExpiresByType image/jpeg                "access plus 1 month"
+  ExpiresByType image/png                 "access plus 1 month"
+  ExpiresByType video/mp4                 "access plus 1 month"
+  ExpiresByType image/x-icon              "access plus 1 year"
+</IfModule>
+
+# ── Cabeceras (seguridad + caché de assets con hash) ─────────────────────────
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+  # Assets con hash → cache inmutable de 1 año
+  <FilesMatch "\.(js|css|woff2?|svg|mp4|jpg|jpeg|png|webp|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # HTML siempre fresco (el contenido cambia entre builds)
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ── Quitar ETag (evita validaciones redundantes con Expires) ─────────────────
+<IfModule mod_headers.c>
+  Header unset ETag
+</IfModule>
+FileETag None

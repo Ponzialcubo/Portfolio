@@ -94,6 +94,18 @@ BORRADOS components/{Footer,Hero,Navigation,Portfolio}.jsx
 con nombre real **Sergio Contreras**, LinkedIn (sergiocontreras-dev) y GitHub
 (Ponzialcubo). Ubicación "Madrid · Remoto / Híbrido".
 
+## ✅ SEO técnico 2026-06-03 (c) — fix Seobility
+La SPA servía HTML vacío → Seobility 42% (Link structure 0%, contenido bajo).
+- **`scripts/prerender.js`**: tras `vite build`, inyecta contenido estático
+  crawlable (1 H1, 8 H2, 27 H3, ~1.200 palabras, enlaces internos) en
+  `dist/index.html`. `build` = `vite build && node scripts/prerender.js`. React
+  lo reemplaza en el navegador (mismo contenido, no cloaking).
+- **`public/.htaccess`**: HTTPS+non-www, GZip, caché, charset, security headers.
+- **Meta description** < 160 car.
+- ⚠️ Si cambias el hero en `Hero.jsx`, actualiza el copy en `scripts/prerender.js`.
+- ⚠️ **External factors (3%)** = backlinks/off-page; no sube con código (alta en
+  Google Business, directorios, LinkedIn, conseguir enlaces entrantes).
+
 ## ✅ Ajustes 2026-06-03 (b)
 - **Teléfono retirado** de toda la web (Contact, Footer, schema). Contacto público
   = solo email. LinkedIn/GitHub se mantienen.

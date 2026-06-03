@@ -3,6 +3,38 @@
 Objetivo: visibilidad en Google (SEO) **y** en buscadores con IA / respuestas
 generativas (AEO — Answer Engine Optimization). Foco geográfico: **Madrid + España**.
 
+## ⭐ Prerender (lo más importante — no romper)
+La web es una **SPA de React**: el HTML servido solo tiene `<div id="root">`, así
+que los crawlers que no ejecutan todo el JS (Seobility, algunos bots) verían una
+página **vacía** → sin H1, sin texto, sin enlaces. Esto hundía el SEO
+(Link structure 0%, contenido bajo, sin estructura).
+
+**Solución:** `scripts/prerender.js` se ejecuta tras `vite build` (ver
+`package.json` → `"build": "vite build && node scripts/prerender.js"`) e inyecta
+una versión **estática y semántica** del contenido (generada desde `src/data/*`)
+dentro de `#root` en `dist/index.html`: header + nav, H1, un H2 por sección, H3
+por tarjeta/pregunta, párrafos, listas y enlaces internos/externos.
+
+- En el navegador, `createRoot().render()` limpia `#root` y monta la app real
+  (mismo contenido → **no es cloaking**).
+- Con JS desactivado o para un crawler, queda una página completa y rastreable.
+
+Resultado en `dist/index.html`: ~1 H1, 8 H2, 27 H3, ~1.200 palabras, enlaces
+internos (incluidos `/privacy`, `/terms`, `/cookies`).
+
+> ⚠️ El copy del **hero** está hardcodeado en `scripts/prerender.js` (objeto
+> `hero`). Si cambias el titular/subtítulo en `Hero.jsx`, actualízalo también ahí.
+> El resto del contenido se genera solo desde `src/data/*`.
+> **Siempre desplegar el resultado de `npm run build`** (que incluye el prerender),
+> nunca un `dist` generado solo con `vite build`.
+
+## Server configuration (Apache / Hostinger) — `public/.htaccess`
+Incluye: redirección a HTTPS + host canónico sin www, SPA routing, `AddDefaultCharset
+UTF-8`, compresión GZip (mod_deflate), caché de navegador (mod_expires), cabeceras
+de seguridad (X-Content-Type-Options, X-Frame-Options, Referrer-Policy,
+Permissions-Policy) y `Cache-Control` inmutable para assets con hash.
+> El `.htaccess` se copia a `dist/` en el build. Súbelo siempre (archivo oculto).
+
 ## Dónde vive el SEO
 Todo el SEO on-page está en **`index.html`** (`<head>`): title, meta description,
 keywords, Open Graph, Twitter Card, geo tags, canonical y los bloques JSON-LD.

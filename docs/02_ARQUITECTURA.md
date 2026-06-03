@@ -8,7 +8,10 @@
   pero **solo** se usa el reset base (`@tailwind base/components/utilities`).
 - **Animaciones:** GSAP + IntersectionObserver propio (`useScrollAnimations`).
 - **Formularios:** Formspree (sin backend).
-- **Deploy:** estático — `npm run build` genera `dist/` (subir a hosting/Vercel/Netlify).
+- **Deploy:** estático — `npm run build` genera `dist/` (se sube a Hostinger por
+  File Manager/FTP). `build` = `vite build && node scripts/prerender.js`.
+- **Prerender SEO:** `scripts/prerender.js` inyecta contenido estático crawlable en
+  `dist/index.html` tras el build (ver `docs/06_SEO_AEO.md`). Imprescindible para SEO.
 
 ## Estructura de carpetas
 ```
@@ -40,6 +43,8 @@ src/
       Contact/   (Contact, ContactForm)
       Footer.jsx
   pages/                    # Privacy, Cookies, Terms (rutas legales)
+scripts/
+  prerender.js              # post-build: inyecta HTML SEO crawlable en dist/index.html
 public/                     # robots.txt, sitemap.xml, favicon.svg, .htaccess, assets/
 ```
 
