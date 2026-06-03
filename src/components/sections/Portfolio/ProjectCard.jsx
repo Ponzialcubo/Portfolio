@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { FONTS, COLORS } from '../../../utils/constants'
 
 // ── Wireframe mockup ──────────────────────────────────────────────────────────
@@ -52,7 +53,8 @@ const ArrowUpRight = ({ size = 13, color = 'currentColor' }) => (
 // ── Card ──────────────────────────────────────────────────────────────────────
 export default function ProjectCard({ project, isActive, cardWidth, isHovered }) {
   const showHover = isActive && isHovered
-  const isExternal = project.href !== '#'
+  const isInternal = project.href && project.href.startsWith('/')
+  const isExternal = !isInternal && project.href !== '#'
 
   return (
     <article style={{
@@ -166,26 +168,58 @@ export default function ProjectCard({ project, isActive, cardWidth, isHovered })
           ))}
         </div>
         <div style={{ height: 1, background: COLORS.border }} />
-        <a
-          href={project.href}
-          target={isExternal ? '_blank' : undefined}
-          rel={isExternal ? 'noopener noreferrer' : undefined}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            alignSelf: 'flex-start', fontFamily: FONTS.body,
-            fontSize: 'clamp(11px, 1.2vh, 13px)', fontWeight: 600,
-            letterSpacing: '0.08em', textTransform: 'uppercase', textDecoration: 'none',
-            color: project.accent,
-            background: showHover ? `${project.accent}18` : 'transparent',
-            border: `1.5px solid ${showHover ? project.accent + 'bb' : project.accent + '55'}`,
-            padding: 'clamp(8px, 1vh, 12px) clamp(16px, 1.8vw, 24px)', borderRadius: 6,
-            transition: 'background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease',
-            boxShadow: showHover ? `0 0 20px ${project.accent}35` : 'none',
-          }}
-        >
-          {project.buttonText}
-          {isExternal ? <ArrowUpRight size={13} color={project.accent} /> : <ArrowRight size={13} color={project.accent} />}
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          {isInternal ? (
+            <Link
+              to={project.href}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                fontFamily: FONTS.body, fontSize: 'clamp(11px, 1.2vh, 13px)', fontWeight: 600,
+                letterSpacing: '0.08em', textTransform: 'uppercase', textDecoration: 'none',
+                color: project.accent,
+                background: showHover ? `${project.accent}18` : 'transparent',
+                border: `1.5px solid ${showHover ? project.accent + 'bb' : project.accent + '55'}`,
+                padding: 'clamp(8px, 1vh, 12px) clamp(16px, 1.8vw, 24px)', borderRadius: 6,
+                transition: 'background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease',
+                boxShadow: showHover ? `0 0 20px ${project.accent}35` : 'none',
+              }}
+            >
+              {project.buttonText}
+              <ArrowRight size={13} color={project.accent} />
+            </Link>
+          ) : (
+            <a
+              href={project.href}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                fontFamily: FONTS.body, fontSize: 'clamp(11px, 1.2vh, 13px)', fontWeight: 600,
+                letterSpacing: '0.08em', textTransform: 'uppercase', textDecoration: 'none',
+                color: project.accent,
+                background: showHover ? `${project.accent}18` : 'transparent',
+                border: `1.5px solid ${showHover ? project.accent + 'bb' : project.accent + '55'}`,
+                padding: 'clamp(8px, 1vh, 12px) clamp(16px, 1.8vw, 24px)', borderRadius: 6,
+                transition: 'background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease',
+                boxShadow: showHover ? `0 0 20px ${project.accent}35` : 'none',
+              }}
+            >
+              {project.buttonText}
+              {isExternal ? <ArrowUpRight size={13} color={project.accent} /> : <ArrowRight size={13} color={project.accent} />}
+            </a>
+          )}
+          {/* Enlace al sitio real (cuando el CTA principal va al caso de estudio) */}
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+              style={{ fontFamily: FONTS.body, fontSize: 11, color: COLORS.textDim, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              onMouseEnter={e => e.currentTarget.style.color = project.accent}
+              onMouseLeave={e => e.currentTarget.style.color = COLORS.textDim}
+            >
+              Ver sitio <ArrowUpRight size={11} color="currentColor" />
+            </a>
+          )}
+        </div>
       </div>
     </article>
   )

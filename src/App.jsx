@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AnimatedBackground from './components/common/AnimatedBackground'
+import CookieBanner from './components/common/CookieBanner'
 import MainLayout from './components/layouts/MainLayout'
 import Hero from './components/sections/Hero'
 import Portfolio from './components/sections/Portfolio/Portfolio'
@@ -17,9 +18,10 @@ const Contact      = lazy(() => import('./components/sections/Contact/Contact'))
 const Footer       = lazy(() => import('./components/sections/Footer'))
 
 // Legal pages (lazy — rarely visited)
-const Privacy = lazy(() => import('./pages/Privacy'))
-const Cookies = lazy(() => import('./pages/Cookies'))
-const Terms   = lazy(() => import('./pages/Terms'))
+const Privacy    = lazy(() => import('./pages/Privacy'))
+const Cookies    = lazy(() => import('./pages/Cookies'))
+const Terms      = lazy(() => import('./pages/Terms'))
+const CaseStudy  = lazy(() => import('./pages/CaseStudy'))
 
 function HomePage() {
   return (
@@ -45,12 +47,14 @@ export default function App() {
   return (
     <>
     <AnimatedBackground />
+    <CookieBanner />
     <BrowserRouter>
       <Routes>
         <Route path="/"        element={<HomePage />} />
-        <Route path="/privacy" element={<Suspense fallback={<LoadingSpinner />}><Privacy /></Suspense>} />
-        <Route path="/cookies" element={<Suspense fallback={<LoadingSpinner />}><Cookies /></Suspense>} />
-        <Route path="/terms"   element={<Suspense fallback={<LoadingSpinner />}><Terms /></Suspense>} />
+        <Route path="/proyectos/:slug" element={<Suspense fallback={<LoadingSpinner />}><CaseStudy /></Suspense>} />
+        <Route path="/privacy"         element={<Suspense fallback={<LoadingSpinner />}><Privacy /></Suspense>} />
+        <Route path="/cookies"         element={<Suspense fallback={<LoadingSpinner />}><Cookies /></Suspense>} />
+        <Route path="/terms"           element={<Suspense fallback={<LoadingSpinner />}><Terms /></Suspense>} />
       </Routes>
     </BrowserRouter>
     </>

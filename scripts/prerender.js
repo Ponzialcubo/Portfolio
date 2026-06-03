@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 import { projects } from '../src/data/projects.js'
+import { caseStudies } from '../src/data/caseStudies.js'
 import { services } from '../src/data/services.js'
 import { whyMeItems } from '../src/data/whyMe.js'
 import { credentials } from '../src/data/credentials.js'
@@ -70,7 +71,10 @@ const portfolioHtml = `
       <p>${esc(p.description)}</p>
       <ul>${(p.highlights || []).map(h => `<li>${esc(h)}</li>`).join('')}</ul>
       <p class="tech">Tecnologías: ${(p.tech || []).map(esc).join(' · ')}</p>
-      <p><a href="${esc(p.href)}"${p.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${esc(p.buttonText)}</a></p>
+      <p>
+        <a href="${esc(p.href)}"${p.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${esc(p.buttonText)}</a>
+        ${p.liveUrl ? `<a href="${esc(p.liveUrl)}" target="_blank" rel="noopener"> Ver sitio</a>` : ''}
+      </p>
     </article>`
       )
       .join('')}
@@ -134,6 +138,22 @@ const faqHtml = `
     ${faqs.map(f => `<h3>${esc(f.question)}</h3><p>${esc(f.answer)}</p>`).join('')}
   </section>`
 
+const caseStudiesHtml = `
+  <section id="casos-de-estudio">
+    <h2>Casos de estudio</h2>
+    <p>Detalle técnico y resultados de cada proyecto.</p>
+    ${caseStudies.map(cs => `
+    <article>
+      <h3>${esc(cs.title)}</h3>
+      <p>${esc(cs.overview)}</p>
+      <p><strong>Reto:</strong> ${esc(cs.challenge)}</p>
+      <p><strong>Solución:</strong> ${esc(cs.solution)}</p>
+      <ul>${cs.results.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
+      <p><a href="/proyectos/${esc(cs.slug)}">Ver caso de estudio completo</a>
+         <a href="${esc(cs.liveUrl)}" target="_blank" rel="noopener"> · Ver sitio</a></p>
+    </article>`).join('')}
+  </section>`
+
 const contactHtml = `
   <section id="contacto">
     <h2>Contacto</h2>
@@ -149,6 +169,11 @@ const contactHtml = `
 const footerHtml = `
   <footer>
     <p>SergioLab · Desarrollo web a medida en Madrid y toda España.</p>
+    <nav aria-label="Proyectos">
+      <a href="/proyectos/oudh-co">Oudh &amp; Co</a> ·
+      <a href="/proyectos/casa-del-surf">Casa del Surf</a> ·
+      <a href="/proyectos/inmobiliaria-marina-carranque">Inmobiliaria Marina Carranque</a>
+    </nav>
     <nav aria-label="Información legal">
       <a href="/privacy">Privacidad</a> ·
       <a href="/terms">Aviso Legal</a> ·
@@ -170,6 +195,7 @@ const content = `<div class="seo-pre">
     ${stackHtml}
     ${processHtml}
     ${testimonialsHtml}
+    ${caseStudiesHtml}
     ${faqHtml}
     ${contactHtml}
   </main>
