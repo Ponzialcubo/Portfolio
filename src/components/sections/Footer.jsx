@@ -48,47 +48,10 @@ function SocialIcon({ label, href, svg }) {
 
 export default function Footer() {
   return (
-    <footer style={{ width: '100%', background: '#06090E', position: 'relative', overflow: 'hidden' }}>
+    <footer style={{ width: '100%', background: '#06090E', borderTop: '1px solid rgba(255,255,255,0.06)', position: 'relative', overflow: 'hidden' }}>
 
-      {/* ── Glow accent ─────────────────────────────────────────── */}
-      <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: '20%', width: '60%', height: 1, background: 'linear-gradient(90deg, transparent, rgba(0,217,255,0.4), transparent)' }} />
-      <div aria-hidden="true" style={{ position: 'absolute', top: -120, left: '50%', transform: 'translateX(-50%)', width: 600, height: 300, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(0,217,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-      {/* ── Statement CTA ────────────────────────────────────────── */}
-      <Container>
-        <div style={{ padding: 'clamp(56px, 9vh, 96px) 0 clamp(48px, 7vh, 72px)', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 'clamp(32px, 5vw, 64px)', alignItems: 'center' }} className="footer-cta-layout">
-
-          <div>
-            <p style={{ fontFamily: FONTS.mono, fontSize: 10.5, letterSpacing: '0.2em', color: 'rgba(0,217,255,0.6)', textTransform: 'uppercase', margin: '0 0 16px' }}>
-              ¿EMPEZAMOS?
-            </p>
-            <h2 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(32px, 5.5vw, 72px)', fontWeight: 800, color: COLORS.textWhite, letterSpacing: '-0.03em', lineHeight: 1.05, margin: 0 }}>
-              Diseño & desarrollo<br />
-              <span style={{ color: COLORS.accentCyan }}>que vende.</span>
-            </h2>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-end', flexShrink: 0 }}>
-            <a
-              href="/contacto"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontFamily: FONTS.body, fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', textDecoration: 'none', color: '#05090D', background: COLORS.accentCyan, padding: '15px 32px', borderRadius: 10, boxShadow: '0 0 40px rgba(0,217,255,0.25)', whiteSpace: 'nowrap', transition: 'opacity 0.2s, transform 0.18s' }}
-              onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'translateY(-2px)' }}
-              onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'none' }}
-            >
-              HABLEMOS →
-            </a>
-            <a href={`mailto:${EMAIL}`} style={{ fontFamily: FONTS.mono, fontSize: 11, color: 'rgba(255,255,255,0.3)', textDecoration: 'none', letterSpacing: '0.06em', transition: 'color 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.color = COLORS.accentCyan}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
-            >
-              {EMAIL}
-            </a>
-          </div>
-        </div>
-      </Container>
-
-      {/* ── Separator ───────────────────────────────────────────── */}
-      <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
+      {/* Subtle top glow */}
+      <div aria-hidden="true" style={{ position: 'absolute', top: -80, left: '50%', transform: 'translateX(-50%)', width: 500, height: 200, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(0,217,255,0.04) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
       {/* ── Main grid ────────────────────────────────────────────── */}
       <Container>

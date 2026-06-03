@@ -119,10 +119,13 @@ export default function FAQ() {
         : 'Buena pregunta. Para darte una respuesta personalizada sobre tu proyecto, lo mejor es que hablemos directamente. Te respondo en menos de 24 horas.'
     }
 
+    // Strip markdown bold/italic so **text** doesn't appear raw in the chat bubble
+    const cleanText = (botText ?? '').replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')
+
     setTyping(false)
     setMessages(m => [...m, {
       id: Date.now() + 1, from: 'bot',
-      text: botText,
+      text: cleanText,
       showCTA: newExchanges >= 2 || !findAnswer(q),
     }])
   }
