@@ -21,7 +21,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          gsap: ['gsap'],
           sections: [
             './src/components/sections/Services/Services.jsx',
             './src/components/sections/WhyMe.jsx',

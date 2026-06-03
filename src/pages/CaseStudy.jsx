@@ -24,7 +24,11 @@ export default function CaseStudy() {
   const { slug } = useParams()
   const cs = caseStudies.find(c => c.slug === slug)
 
-  useEffect(() => { window.scrollTo(0, 0) }, [slug])
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    if (cs) document.title = cs.metaTitle
+    return () => { document.title = 'SergioLab | Desarrollo Web a Medida, E-commerce y Sistemas | Madrid' }
+  }, [slug, cs])
 
   if (!cs) return <Navigate to="/" replace />
 

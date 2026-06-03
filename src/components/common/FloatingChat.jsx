@@ -78,6 +78,7 @@ export default function FloatingChat() {
   const [badge, setBadge]     = useState(false)
   const msgsRef = useRef(null)
   const inputRef = useRef(null)
+  const hasOpenedRef = useRef(false)
 
   // Scroll only inside the chat container
   useEffect(() => {
@@ -85,13 +86,15 @@ export default function FloatingChat() {
     msgsRef.current.scrollTop = msgsRef.current.scrollHeight
   }, [messages, typing])
 
-  // Show badge after 8 seconds if chat hasn't been opened
+  // Show badge after 8s if user never opened the chat.
+  // Uses a ref instead of the `open` state to avoid stale closure.
   useEffect(() => {
-    const t = setTimeout(() => { if (!open) setBadge(true) }, 8000)
+    const t = setTimeout(() => { if (!hasOpenedRef.current) setBadge(true) }, 8000)
     return () => clearTimeout(t)
   }, [])
 
   const handleOpen = () => {
+    hasOpenedRef.current = true
     setOpen(v => !v)
     setBadge(false)
     setTimeout(() => inputRef.current?.focus(), 200)

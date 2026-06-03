@@ -4,10 +4,11 @@ Objetivo: visibilidad en Google (SEO) **y** en buscadores con IA / respuestas
 generativas (AEO — Answer Engine Optimization). Foco geográfico: **Madrid + España**.
 
 ## ⭐ Prerender (lo más importante — no romper)
-La web es una **SPA de React**: el HTML servido solo tiene `<div id="root">`, así
-que los crawlers que no ejecutan todo el JS (Seobility, algunos bots) verían una
-página **vacía** → sin H1, sin texto, sin enlaces. Esto hundía el SEO
-(Link structure 0%, contenido bajo, sin estructura).
+La web es una **SPA de React multi-página**: la home sirve solo `Hero + Footer`
+(ver `pages/HomePage.jsx`). Las secciones viven en rutas propias (`/portfolio`,
+`/servicios`, etc.). El HTML servido solo tiene `<div id="root">`, así que los
+crawlers que no ejecutan todo el JS verían una página **vacía** → sin H1, sin
+texto, sin enlaces internos.
 
 **Solución:** `scripts/prerender.js` se ejecuta tras `vite build` (ver
 `package.json` → `"build": "vite build && node scripts/prerender.js"`) e inyecta
@@ -40,6 +41,10 @@ Todo el SEO on-page está en **`index.html`** (`<head>`): title, meta descriptio
 keywords, Open Graph, Twitter Card, geo tags, canonical y los bloques JSON-LD.
 Los textos de las secciones (H1/H2, FAQ, copy) refuerzan las keywords.
 
+Las páginas de casos de estudio (`/proyectos/:slug`) tienen sus propios
+`metaTitle` y `metaDescription` en `src/data/caseStudies.js`. El componente
+`CaseStudy.jsx` aplica `document.title` dinámicamente vía `useEffect`.
+
 ## Keywords principales
 ```
 desarrollo web a medida · desarrollador full-stack madrid · diseñador web
@@ -55,6 +60,8 @@ panel de gestión · next.js · react · web profesional españa
 3. **ItemList** (`#portfolio`) — los 3 proyectos como WebSite con URL y descripción.
 4. **FAQPage** (`#faq`) — las 8 preguntas/respuestas (clave para AEO y rich results).
 5. **WebSite** (`#website`) — metadatos del sitio.
+6. **BreadcrumbList** (`#breadcrumb`) — las 6 rutas principales (Inicio, Portfolio,
+   Servicios, Sobre mí, El proceso, Contacto). ← añadido 2026-06-03.
 
 > ⚠️ **Sincronización obligatoria:** las preguntas del `FAQPage` deben coincidir
 > palabra por palabra con `src/data/faq.js`. Si editas una, edita las dos.
@@ -63,22 +70,57 @@ panel de gestión · next.js · react · web profesional españa
 - Respuestas FAQ **autocontenidas** y en lenguaje natural (citables por una IA).
 - Encabezados claros y jerárquicos (un solo `<h1>` en el hero; `<h2>` por sección;
   preguntas FAQ en `<h3>`).
-- Datos estructurados ricos (Service, FAQPage, ItemList).
+- Datos estructurados ricos (Service, FAQPage, ItemList, BreadcrumbList).
 - Contenido que responde a la *intención* del usuario (precio, plazos, mantenimiento,
   "¿aparecerá en Google?", remoto…), no solo keywords.
 
+## Auditoría 2026-06-03 — hallazgos y correcciones
+
+### ✅ Corregido
+| Problema | Fix |
+|---|---|
+| Sitemap incompleto (faltaban `/portfolio`, `/servicios`, `/sobre-mi`, `/proceso`, `/contacto`) | Añadidas las 5 rutas con prioridades correctas |
+| `CaseStudy.jsx` no actualizaba `document.title` | `useEffect` que aplica `cs.metaTitle` al montar, revierte al desmontar |
+| Faltaba `twitter:creator` en Twitter Card | Añadida (`@SergioLab_es`) |
+| Faltaba `BreadcrumbList` en JSON-LD | Añadido `#breadcrumb` con 6 entradas |
+
+### ⚠️ Pendiente (no depende del código)
+| Item | Estado |
+|---|---|
+| `public/og-image.jpg` (1200×630) | Pendiente del cliente — el meta la referencia pero no existe |
+| Alta en Google Search Console + sitemap enviado | Pendiente |
+| `twitter:site` (`@SergioLab_es`) | Verificar handle real antes de activar |
+| Backlinks / off-page (External factors Seobility) | Solo sube con directorios, Google Business, LinkedIn, reseñas |
+
+## Sitemap — rutas cubiertas (2026-06-03)
+```
+/ (home)          priority 1.0
+/portfolio        priority 0.85
+/servicios        priority 0.85
+/contacto         priority 0.80
+/sobre-mi         priority 0.75
+/proceso          priority 0.65
+/proyectos/oudh-co                         priority 0.90
+/proyectos/casa-del-surf                   priority 0.90
+/proyectos/inmobiliaria-marina-carranque   priority 0.90
+/privacy, /cookies, /terms                priority 0.40
+```
+
 ## Checklist de verificación (al desplegar)
-- [ ] `index.html` title ≤ ~60 car. y description ≤ ~155 car.
+- [x] `index.html` title ≤ ~67 car. y description ≤ ~143 car.
+- [x] JSON-LD completo: Person, ProfessionalService, ItemList, FAQPage, WebSite, BreadcrumbList.
+- [x] `robots.txt` permite indexación y apunta al sitemap.
+- [x] `sitemap.xml` con `lastmod` 2026-06-03 y todas las rutas públicas.
+- [x] `CaseStudy.jsx` aplica `document.title` dinámico.
 - [ ] Validar JSON-LD en https://validator.schema.org y Rich Results Test.
-- [ ] `public/og-image.jpg` 1200×630 existe (hoy **pendiente** — el meta lo referencia).
-- [ ] `robots.txt` permite indexación y apunta al sitemap. ✅
-- [ ] `sitemap.xml` con `lastmod` actual. ✅ (2026-06-02)
-- [ ] Core Web Vitals en verde (PageSpeed Insights) — vídeo del hero optimizado.
-- [ ] Dar de alta el sitio en Google Search Console y enviar sitemap.
+- [ ] `public/og-image.jpg` 1200×630 existe.
+- [ ] Core Web Vitals en verde (PageSpeed Insights).
+- [ ] Alta en Google Search Console + envío de sitemap.
 
 ## Pendiente / mejoras futuras
 - Generar `og-image.jpg` (hoy referenciada pero no existe en `public/`).
 - Convertir el vídeo del hero a `.webm` (mejora LCP en móvil).
 - Añadir `Review` + `AggregateRating` al schema cuando haya testimonios reales.
-- Considerar `BreadcrumbList` si se añaden páginas/rutas nuevas.
-- Open Graph por proyecto si en el futuro hay páginas de caso de estudio.
+- Añadir `LocalBusiness` si el negocio se da de alta en Google Business Profile.
+- Open Graph por proyecto si en el futuro hay páginas de caso de estudio con imagen propia.
+- Verificar handle `@SergioLab_es` en X/Twitter antes de activar `twitter:site/creator`.

@@ -1,29 +1,30 @@
 # HANDOFF — SergioLab Portfolio
-> Estado de la web tras el rediseño profesional. Punto de partida de la próxima sesión.
-> Fecha: 2026-06-02 · Stack: React 18 + Vite 5 · Build: ✅ limpio
+> Estado de la web tras la auditoría SEO. Punto de partida de la próxima sesión.
+> Fecha: 2026-06-03 · Stack: React 18 + Vite 5 · Build: pendiente de correr
 
 ---
 
 ## TL;DR
-El portfolio pasó de "freelance genérico con proyectos inventados" a **web de
-estudio profesional**: posicionamiento full-stack, 3 proyectos reales, secciones
-nuevas (Stack, Testimonios, FAQ) y SEO/AEO completo. La web compila y está lista
-para desplegar. Faltan **3 inputs del cliente** para el contenido 100% final
-(CV, testimonios reales, og-image) — ver "Pendiente".
+Portfolio profesional full-stack en estado sólido. Multi-página SPA con routing,
+casos de estudio ricos, chat IA en FAQ, FloatingChat, prerender SEO, 6 tipos de
+JSON-LD. Esta sesión corrigió 4 gaps SEO (sitemap incompleto, sin document.title
+dinámico en casos de estudio, sin BreadcrumbList, sin twitter:creator). Faltan
+**3 inputs del cliente** para el contenido 100% final: og-image, testimonios
+reales, vídeo hero.
 
 ## Cómo arrancar
 ```bash
 cd c:\Users\ponzi\Desktop\mi-portfolio
 npm run dev       # desarrollo
-npm run build     # producción → dist/
+npm run build     # producción → dist/ (incluye prerender SEO)
 ```
 Leer primero: `CLAUDE.md` → `docs/08_ESTADO_ACTUAL.md` → `docs/07_HOJA_DE_RUTA.md`.
 
 ---
 
-## Qué se hizo en esta sesión
+## Qué se hizo en sesiones anteriores
 
-### 1. Reposicionamiento (decidido con el cliente)
+### Sesión 2026-06-02 — Reposicionamiento + rediseño base
 | | Antes | Ahora |
 |---|---|---|
 | Rol | Frontend Developer · Madrid | **Full-Stack Developer & Web Designer** |
@@ -31,115 +32,96 @@ Leer primero: `CLAUDE.md` → `docs/08_ESTADO_ACTUAL.md` → `docs/07_HOJA_DE_RU
 | Hero | "TU PYME / POSICIONADA" | **"DE LA IDEA / AL DEPLOY"** |
 | Precios | "Desde 800€…" | **Sin precios** (presupuesto a medida) |
 
-### 2. Portfolio → 3 proyectos REALES
-Reescrito `src/data/projects.js`. Eliminados los inventados (perfumería demo,
-restaurante, app fitness, dashboard gym). Quedan:
-1. **Oudh & Co** — e-commerce perfumería + Stripe + chatbot IA (Claude) + panel
-   admin + facturas PDF → `oudh.sergiolab.es` · badge "DEMO EN VIVO".
-2. **Casa del Surf** — motor de reservas (fechas) + Stripe + panel anti-overbooking
-   → `casadelsurf.es` · badge "EN DESARROLLO".
-3. **Inmobiliaria Marina Carranque** — portal inmobiliario, cliente real
-   → `inmobiliariamarinacarranque.es` · badge "PROYECTO REAL".
+Portfolio → 3 proyectos REALES (Oudh & Co, Casa del Surf, Inmobiliaria Marina
+Carranque). Secciones nuevas: Stack, Testimonios, FAQ. SEO/AEO completo.
+Documentación `docs/` + `CLAUDE.md`.
 
-Cada tarjeta ahora muestra `highlights` (4 capacidades clave con checkmarks) —
-`ProjectCard.jsx` actualizado.
+### Sesión 2026-06-03 — CV, rediseño visual, SEO técnico, ajustes
+- **CV integrado**: Stack (7 grupos), credenciales, nombre real "Sergio Contreras",
+  LinkedIn (sergiocontreras-dev), GitHub (Ponzialcubo).
+- **Rediseño profesional**: Stack GSAP stagger, HowItWorks carrusel interactivo,
+  Testimonials con estrellas, FAQ → chat IA keyword-matching, ContactForm
+  mejorado, Footer 3 columnas, FloatingChat widget, CookieBanner.
+- **SEO técnico**: `scripts/prerender.js` (HTML estático para crawlers, evita SPA
+  vacía), `.htaccess` ampliado, multi-página SPA con React Router.
+- **Teléfono retirado** de toda la web. Contacto = solo email + LinkedIn + GitHub.
+- **4º proyecto** preparado con `published: false` (tools.sergiolab.es).
+- **Casos de estudio** (`/proyectos/:slug`) con contenido rico.
 
-### 3. Secciones nuevas (data-driven + lazy)
-- **Stack tecnológico** — `sections/Stack.jsx` + `data/stack.js` (grid por categorías).
-- **Testimonios** — `sections/Testimonials.jsx` + `data/testimonials.js`
-  (placeholders marcados; muestran aviso hasta ser reales).
-- **FAQ** — `sections/FAQ.jsx` + `data/faq.js` (acordeón accesible, 8 preguntas
-  orientadas a AEO).
+### Sesión 2026-06-03 (esta) — Auditoría SEO
+Revisión completa del sitio. **4 correcciones aplicadas:**
 
-Orden final de la home (`App.jsx`):
-`Hero → Portfolio → Servicios → Sobre mí → Stack → Proceso → Testimonios → FAQ → Contacto → Footer`.
-Servicios reescritos sin precios (`data/services.js`). Navegación ampliada
-(`data/navigation.js`: + Proceso, + FAQ).
-
-### 4. SEO / AEO (todo en `index.html`)
-- Title, description, keywords nuevos (keywords full-stack + Madrid/España).
-- Geo tags, Open Graph y Twitter Card actualizados.
-- JSON-LD `@graph` reescrito: **Person**, **ProfessionalService** (con OfferCatalog
-  de 3 servicios), **ItemList** (3 proyectos), **FAQPage** (8 Q&A) y **WebSite**.
-- `sitemap.xml` con `lastmod` 2026-06-02. `robots.txt` OK.
-
-### 5. Limpieza
-Eliminados 7 archivos duplicados/muertos (`components/Footer|Hero|Navigation|
-Portfolio.jsx`, `sections/Cookies|Legal|Privacy.jsx`). El árbol quedó coherente.
-
-### 6. Documentación
-Creada carpeta **`docs/`** (01_PROYECTO → 08_ESTADO_ACTUAL), **`CLAUDE.md`** (entry
-point para la IA del IDE) y este `HANDOFF.md`. La vieja carpeta `audit/` queda
-como histórico.
+| # | Problema | Fix | Archivo |
+|---|---|---|---|
+| 1 | Sitemap incompleto (faltaban 5 rutas de sección) | Añadidas `/portfolio`, `/servicios`, `/contacto`, `/sobre-mi`, `/proceso` | `public/sitemap.xml` |
+| 2 | `CaseStudy` sin `document.title` dinámico | `useEffect` aplica `cs.metaTitle`; revierte al desmontar | `src/pages/CaseStudy.jsx` |
+| 3 | Sin `twitter:creator` | Añadido `@SergioLab_es` | `index.html` |
+| 4 | Sin `BreadcrumbList` en JSON-LD | Añadido `#breadcrumb` con 6 entradas | `index.html` |
 
 ---
 
-## Archivos clave tocados/creados
+## Arquitectura actual (resumen)
+
 ```
-NUEVOS   src/data/faq.js · testimonials.js · stack.js
-         src/components/sections/Stack.jsx · Testimonials.jsx · FAQ.jsx
-         CLAUDE.md · HANDOFF.md · docs/01..08_*.md
-EDITADOS src/data/projects.js · services.js · navigation.js
-         src/components/sections/Hero.jsx · TechStack.jsx · WhyMe.jsx
-         src/components/sections/Portfolio/Portfolio.jsx · ProjectCard.jsx
-         src/App.jsx · index.html · public/sitemap.xml
-BORRADOS components/{Footer,Hero,Navigation,Portfolio}.jsx
-         components/sections/{Cookies,Legal,Privacy}.jsx
+src/
+├── pages/
+│   ├── HomePage.jsx          Hero + Footer (ruta /)
+│   ├── PortfolioPage.jsx     (ruta /portfolio)
+│   ├── ServicesPage.jsx      (ruta /servicios)
+│   ├── AboutPage.jsx         (ruta /sobre-mi)
+│   ├── ProcessPage.jsx       (ruta /proceso)
+│   ├── ContactPage.jsx       (ruta /contacto)
+│   ├── CaseStudy.jsx         (ruta /proyectos/:slug) ← document.title dinámico
+│   └── Privacy|Terms|Cookies
+├── data/
+│   ├── projects.js           3 publicados + 1 (published:false)
+│   ├── caseStudies.js        metaTitle/metaDescription por proyecto
+│   ├── faq.js                8 Q&A (sync con FAQPage JSON-LD en index.html)
+│   ├── stack.js / services.js / testimonials.js / howItWorks.js
+│   ├── credentials.js / navigation.js / whyMe.js
+└── components/
+    ├── common/FloatingChat.jsx  CookieBanner.jsx
+    └── sections/*
+
+scripts/prerender.js    Inyecta HTML SEO estático en dist/index.html tras build
+public/
+├── sitemap.xml         11 URLs: home + 5 secciones + 3 casos + 3 legales
+├── robots.txt          Allow: / + Sitemap pointer
+└── .htaccess           HTTPS, GZip, caché, security headers
 ```
 
 ---
 
-## ✅ CV integrado (2026-06-03)
-`stack.js` (7 grupos) y `credentials.js` verificados con el CV. Contacto y schema
-con nombre real **Sergio Contreras**, LinkedIn (sergiocontreras-dev) y GitHub
-(Ponzialcubo). Ubicación "Madrid · Remoto / Híbrido".
+## JSON-LD en index.html — 6 tipos
+1. **Person** — Sergio Contreras, jobTitle, sameAs (LinkedIn/GitHub), hasCredential
+2. **ProfessionalService** — SergioLab, areaServed, hasOfferCatalog (3 servicios)
+3. **ItemList** — 3 proyectos como WebSite
+4. **FAQPage** — 8 Q&A (sync con `data/faq.js`)
+5. **WebSite** — metadatos del sitio
+6. **BreadcrumbList** — 6 rutas principales ← nuevo
 
-## ✅ Rediseño profesional completo 2026-06-03 (d)
-- **Stack:** grid animado GSAP stagger, contador, hover por badge.
-- **HowItWorks:** carrusel interactivo (tabs + progress bar GSAP + número grande).
-- **Testimonials:** aviso placeholder eliminado, cards con estrellas + hover lift.
-- **FAQ:** acordeón → chat IA con keyword-matching sobre `data/faq.js`. Typing
-  indicator, CTA automático tras 2 intercambios, chips de sugerencia.
-- **ContactForm:** campo presupuesto, focus states dinámicos, submit CTA.
-- **Footer:** CTA band + grid 3 cols (Brand+Social / Nav / Proyectos) + iconos SVG.
-- `hooks/useStaggerReveal.js` — nuevo hook GSAP stagger reutilizable.
-- Build ✅ · Push `d27f8f3..b77d5c7`
+---
 
-## ✅ SEO técnico 2026-06-03 (c) — fix Seobility
-La SPA servía HTML vacío → Seobility 42% (Link structure 0%, contenido bajo).
-- **`scripts/prerender.js`**: tras `vite build`, inyecta contenido estático
-  crawlable (1 H1, 8 H2, 27 H3, ~1.200 palabras, enlaces internos) en
-  `dist/index.html`. `build` = `vite build && node scripts/prerender.js`. React
-  lo reemplaza en el navegador (mismo contenido, no cloaking).
-- **`public/.htaccess`**: HTTPS+non-www, GZip, caché, charset, security headers.
-- **Meta description** < 160 car.
-- ⚠️ Si cambias el hero en `Hero.jsx`, actualiza el copy en `scripts/prerender.js`.
-- ⚠️ **External factors (3%)** = backlinks/off-page; no sube con código (alta en
-  Google Business, directorios, LinkedIn, conseguir enlaces entrantes).
+## ⚠️ Pendiente del cliente
 
-## ✅ Ajustes 2026-06-03 (b)
-- **Teléfono retirado** de toda la web (Contact, Footer, schema). Contacto público
-  = solo email. LinkedIn/GitHub se mantienen.
-- **Casa del Surf** → URL `https://casadelsurf.vercel.app`.
-- **4º proyecto "Laboratorio de IA"** preparado en `src/data/projects.js` con
-  `published: false` (oculto). `projects` exporta solo los publicados. Para
-  mostrarlo cuando esté montado: poner URL real + `published: true`. Nada más.
-
-## ⚠️ Pendiente del cliente (bloquea contenido final)
-1. **Testimonios reales** (2–4) → sustituir en `src/data/testimonials.js` y poner
-   `isPlaceholder: false`. El aviso "Testimonios de ejemplo" desaparece solo.
-   (Ahora son placeholders atados a los 3 proyectos.)
-2. **`public/og-image.jpg`** (1200×630) → hoy el meta la referencia pero no existe.
+| Item | Prioridad | Acción |
+|---|---|---|
+| `public/og-image.jpg` (1200×630) | **Alta** | Crear en Figma/Canva y subir a `public/` |
+| Alta en Google Search Console | **Alta** | Entrar en search.google.com/search-console, verificar con DNS o meta tag, enviar sitemap |
+| Testimonios reales | Media | Sustituir en `src/data/testimonials.js`, quitar `isPlaceholder: true` |
+| Vídeo hero `.webm` | Media | Convertir `hero-video.mp4` a `.webm` para LCP móvil |
+| Verificar `@SergioLab_es` en X/Twitter | Baja | Si el handle es correcto, dejar el `twitter:creator`; si no, corregirlo |
 
 ## Próximos pasos técnicos (ver `docs/07_HOJA_DE_RUTA.md`)
-- Vídeo del hero a `.webm` (mejora LCP móvil).
-- Alta en Google Search Console + envío del sitemap.
-- Banner de cookies (GDPR) antes de activar Analytics.
-- Focus-trap real en el menú móvil.
-- (Futuro) páginas de caso de estudio por proyecto, i18n inglés.
+- `npm run build` para aplicar los cambios de esta sesión.
+- Validar JSON-LD en https://validator.schema.org (especialmente el BreadcrumbList nuevo).
+- Activar Google Search Console + enviar sitemap actualizado (11 URLs).
+- Banner de cookies GDPR activo → conectar Google Analytics.
 
 ## Recordatorios para la próxima IA
 - **Contenido = datos**: editar `src/data/*.js`, no el JSX.
 - **FAQ**: si cambias `data/faq.js`, sincroniza el `FAQPage` de `index.html`.
 - **Estilos**: inline + tokens de `utils/constants.js`, nada de Tailwind en componentes.
+- **Prerender**: si cambias el copy del hero en `Hero.jsx`, actualiza `scripts/prerender.js`.
+- **Sitemap**: si añades rutas nuevas en `App.jsx`, añadirlas también a `sitemap.xml`.
 - Al terminar: `npm run build` y actualizar `docs/08_ESTADO_ACTUAL.md`.
