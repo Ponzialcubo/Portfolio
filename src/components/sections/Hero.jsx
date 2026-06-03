@@ -80,11 +80,11 @@ export default function Hero() {
             </p>
 
             <div className="cta-group anim-fade d-500" style={{ marginTop: '-4px' }}>
-              <a href="#contacto" className="btn-primary">
+              <a href="/contacto" className="btn-primary">
                 <span aria-hidden="true">→</span> CONTACTAR
               </a>
-              <a href="#portfolio" className="btn-secondary">
-                <span aria-hidden="true">●</span> PORTFOLIO
+              <a href="/portfolio" className="btn-secondary">
+                <span aria-hidden="true">●</span> PROYECTOS
               </a>
             </div>
           </div>

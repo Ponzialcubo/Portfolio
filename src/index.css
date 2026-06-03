@@ -184,11 +184,11 @@ html, body { width: 100%; min-height: 100%; overflow-x: hidden; background: #0F1
   background: linear-gradient(to top, rgba(15,20,25,0.70) 0%, transparent 100%);
 }
 
-/* ── Glass nav bar (edge-to-edge) ─────────────────────────────────────────── */
+/* ── Glass nav bar (edge-to-edge, fixed for multi-page) ───────────────────── */
 #glass-nav {
-  position: absolute;
+  position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 30;
+  z-index: 100;
   backdrop-filter: blur(22px) saturate(1.7);
   -webkit-backdrop-filter: blur(22px) saturate(1.7);
   background: rgba(15, 20, 25, 0.42);

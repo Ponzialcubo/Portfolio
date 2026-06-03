@@ -1,206 +1,179 @@
-import { useState, useRef } from 'react'
+import { useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useEffect } from 'react'
 import { COLORS, FONTS } from '../../utils/constants'
-import { useScrollAnimations } from '../../hooks/useScrollAnimations'
 import Container from '../common/Container'
-import SectionHeader from '../common/SectionHeader'
-import { whyMeItems } from '../../data/whyMe'
 import { credentials } from '../../data/credentials'
 
-// ── Credential badge ────────────────────────────────────────────
-function CredentialBadge({ item }) {
-  return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 16,
-      background: 'rgba(255,255,255,0.03)',
-      border: `1px solid ${item.accent}28`,
-      borderRadius: 10, padding: '16px 20px',
-      flex: 1, minWidth: 0,
-    }}>
-      <span style={{ fontSize: 40, lineHeight: 1, flexShrink: 0 }}>{item.icon}</span>
-      <div>
-        <p style={{
-          fontFamily: FONTS.heading, fontSize: 18, fontWeight: 700,
-          color: COLORS.textWhite, margin: 0, lineHeight: 1.3,
-        }}>
-          {item.title}
-        </p>
-        <p style={{
-          fontFamily: FONTS.body, fontSize: 14,
-          color: '#94A3B8', margin: '4px 0 0', lineHeight: 1.4,
-        }}>
-          {item.issuer}
-        </p>
-      </div>
-    </div>
-  )
-}
+gsap.registerPlugin(ScrollTrigger)
 
-// ── Why card ────────────────────────────────────────────────────
-function WhyCard({ item }) {
-  const [hov, setHov] = useState(false)
-  return (
-    <div
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        background: hov ? `${item.accent}08` : 'rgba(255,255,255,0.025)',
-        border: `1.5px solid ${hov ? item.accent + '38' : 'rgba(255,255,255,0.07)'}`,
-        borderRadius: 12,
-        padding: '24px',
-        display: 'flex', flexDirection: 'column', gap: 10,
-        transition: 'background 0.3s, border-color 0.3s, transform 0.3s',
-        transform: hov ? 'translateY(-3px)' : 'none',
-        position: 'relative', overflow: 'hidden',
-      }}
-    >
-      {/* Left accent bar */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, bottom: 0,
-        width: 3, borderRadius: '12px 0 0 12px',
-        background: item.accent, opacity: hov ? 0.85 : 0.35,
-        transition: 'opacity 0.3s',
-      }} />
+const STATS = [
+  { value: '3+', label: 'Proyectos\nen producción', accent: COLORS.accentCyan },
+  { value: '3', label: 'Titulaciones\ntécnicas', accent: '#10B981' },
+  { value: '∞', label: 'Café\ndiario', accent: '#F59E0B' },
+]
 
-      <span style={{ fontSize: 32, lineHeight: 1, paddingLeft: 8 }}>{item.icon}</span>
+const DIFFERENTIALS = [
+  'Analítica mensual incluida en cada proyecto',
+  'Acceso a Google Business + informe PDF',
+  'Tú eres dueño del código y los datos',
+  'Sin comisiones por venta ni dependencias de terceros',
+]
 
-      <h3 style={{
-        fontFamily: FONTS.heading,
-        fontSize: 20, fontWeight: 700,
-        color: COLORS.textWhite,
-        margin: 0, lineHeight: 1.2, paddingLeft: 8,
-      }}>
-        {item.title}
-      </h3>
+const EXPERIENCE = [
+  {
+    period: '2026 — Actualidad',
+    role: 'Desarrollador Web Full-Stack · Freelance',
+    detail: 'Desarrollo a medida para pymes: e-commerce, motores de reserva y paneles de gestión. Marca SergioLab.',
+    accent: COLORS.accentCyan,
+  },
+  {
+    period: 'Mar — Jun 2026',
+    role: 'Prácticas · Desarrollo & BI · Mercanza',
+    detail: 'Desarrollo React con demos en producción, mashups e inyección de objetos Qlik Sense. Dashboard Power BI desde cero.',
+    accent: '#10B981',
+  },
+]
 
-      <p style={{
-        fontFamily: FONTS.body,
-        fontSize: 14,
-        color: '#94A3B8', lineHeight: 1.65, margin: 0, paddingLeft: 8,
-      }}>
-        {item.description}
-      </p>
-    </div>
-  )
-}
-
-// ── Main section ────────────────────────────────────────────────
 export default function WhyMe() {
-  const ref = useRef(null)
-  useScrollAnimations(ref)
+  const sectionRef = useRef(null)
+  const statsRef = useRef(null)
+
+  useEffect(() => {
+    if (!statsRef.current) return
+    const items = statsRef.current.querySelectorAll('.stat-item')
+    gsap.fromTo(items,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: statsRef.current, start: 'top 80%', toggleActions: 'play none none none' },
+      }
+    )
+    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+  }, [])
 
   return (
     <section
-      ref={ref}
+      ref={sectionRef}
       id="sobre-mi"
-      style={{
-        width: '100%',
-        background: COLORS.bgPrimary,
-        padding: 'clamp(64px, 9vh, 112px) 0',
-      }}
+      style={{ width: '100%', background: COLORS.bgPrimary, padding: 'clamp(72px, 10vh, 120px) 0' }}
     >
       <Container>
-        <SectionHeader
-          eyebrow="POR QUÉ ELEGIRME"
-          title="SOBRE MÍ"
-          subtitle="Desarrollador full-stack con formación técnica real y análisis de datos incluido"
-          style={{ marginBottom: 'clamp(32px, 5vh, 48px)' }}
-        />
-
-        {/* ── Formación académica ─────────────────────────────── */}
-        <div style={{ marginBottom: 'clamp(28px, 4vh, 44px)' }}>
-          <p style={{
-            fontFamily: FONTS.mono, fontSize: 12, letterSpacing: '0.18em',
-            color: COLORS.accentCyan, textTransform: 'uppercase', margin: '0 0 14px',
-          }}>
-            Formación Académica
+        {/* ── Eyebrow + H2 ─────────────────────────────────────── */}
+        <div style={{ marginBottom: 'clamp(48px, 7vh, 72px)' }}>
+          <p style={{ fontFamily: FONTS.mono, fontSize: 11, fontWeight: 500, letterSpacing: '0.26em', color: COLORS.accentCyan, textTransform: 'uppercase', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ width: 22, height: 1, background: COLORS.accentCyan, opacity: 0.55, display: 'inline-block' }} />
+            SOBRE MÍ
           </p>
-          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }} className="creds-grid">
-            {credentials.education.map(item => (
-              <CredentialBadge key={item.title} item={item} />
-            ))}
-          </div>
+          <h1 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: 800, color: COLORS.textWhite, letterSpacing: '-0.025em', lineHeight: 0.95, margin: '0 0 24px', textTransform: 'uppercase' }}>
+            SERGIO CONTRERAS
+          </h1>
+          <p style={{ fontFamily: FONTS.body, fontSize: 'clamp(16px, 1.8vw, 20px)', color: COLORS.textMuted, lineHeight: 1.75, maxWidth: 640, margin: 0 }}>
+            Desarrollador web full-stack y diseñador con base en Madrid. Llevo cada proyecto de principio a fin —
+            del diseño en Figma al despliegue en producción — cuidando el rendimiento, el SEO/AEO y la conversión.
+            Mi objetivo no es solo entregar una web, sino que tu negocio tenga más clientes.
+          </p>
         </div>
 
-        {/* ── Diferencial único ───────────────────────────────── */}
-        <div style={{
-          background: 'rgba(255,255,255,0.025)',
-          border: '1.5px solid rgba(0,217,255,0.18)',
-          borderRadius: 14,
-          padding: 'clamp(24px, 3.5vh, 36px) clamp(24px, 3vw, 36px)',
-          marginBottom: 'clamp(36px, 5vh, 56px)',
-        }}>
-          <p style={{
-            fontFamily: FONTS.mono, fontSize: 12, letterSpacing: '0.18em',
-            color: COLORS.accentCyan, textTransform: 'uppercase', margin: '0 0 14px',
-          }}>
-            Diferencial único · Analytics & Reporting
-          </p>
+        {/* ── Dos columnas: stats + experiencia ─────────────────── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1.2fr)', gap: 'clamp(40px, 6vw, 80px)', marginBottom: 'clamp(48px, 7vh, 72px)' }} className="about-cols">
 
-          <p style={{
-            fontFamily: FONTS.heading,
-            fontSize: 'clamp(22px, 2.8vw, 32px)',
-            fontWeight: 700, color: COLORS.textWhite,
-            margin: '0 0 12px', lineHeight: 1.3,
-          }}>
-            No solo te hago el sitio web —{' '}
-            <span style={{ color: COLORS.accentCyan }}>
-              te entrego datos mensuales
-            </span>{' '}
-            para que sepas cómo va tu negocio.
-          </p>
-
-          <p style={{
-            fontFamily: FONTS.body, fontSize: 16,
-            color: '#E2E8F0', margin: '0 0 20px', lineHeight: 1.6,
-          }}>
-            Acceso a Google Business, dashboard mensual e informes PDF incluidos en cada proyecto.
-          </p>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {credentials.differentiators.map(f => (
-              <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{
-                  width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
-                  background: 'rgba(0,217,255,0.12)',
-                  border: '1px solid rgba(0,217,255,0.3)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 11, color: COLORS.accentCyan,
-                }}>
-                  ✓
+          {/* Stats */}
+          <div ref={statsRef} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {STATS.map(s => (
+              <div key={s.label} className="stat-item" style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '20px 0', borderBottom: `1px solid rgba(255,255,255,0.06)` }}>
+                <span style={{ fontFamily: FONTS.heading, fontSize: 'clamp(48px, 6vw, 72px)', fontWeight: 800, color: s.accent, lineHeight: 1, letterSpacing: '-0.03em', flexShrink: 0 }}>
+                  {s.value}
                 </span>
-                <span style={{
-                  fontFamily: FONTS.body, fontSize: 15, fontWeight: 500,
-                  color: '#E2E8F0',
-                }}>
-                  {f}
+                <span style={{ fontFamily: FONTS.body, fontSize: 15, color: COLORS.textMuted, lineHeight: 1.5, whiteSpace: 'pre-line' }}>
+                  {s.label}
                 </span>
               </div>
             ))}
           </div>
+
+          {/* Experiencia + formación */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+            <div>
+              <p style={{ fontFamily: FONTS.mono, fontSize: 10, letterSpacing: '0.18em', color: COLORS.textDim, textTransform: 'uppercase', margin: '0 0 20px' }}>Experiencia</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                {EXPERIENCE.map(e => (
+                  <div key={e.role} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                    <div style={{ width: 3, alignSelf: 'stretch', background: e.accent, opacity: 0.5, borderRadius: 2, flexShrink: 0, marginTop: 4 }} />
+                    <div>
+                      <p style={{ fontFamily: FONTS.mono, fontSize: 10, color: e.accent, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 4px' }}>{e.period}</p>
+                      <p style={{ fontFamily: FONTS.heading, fontSize: 15, fontWeight: 700, color: COLORS.textWhite, margin: '0 0 6px', lineHeight: 1.3 }}>{e.role}</p>
+                      <p style={{ fontFamily: FONTS.body, fontSize: 13, color: COLORS.textMuted, lineHeight: 1.65, margin: 0 }}>{e.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p style={{ fontFamily: FONTS.mono, fontSize: 10, letterSpacing: '0.18em', color: COLORS.textDim, textTransform: 'uppercase', margin: '0 0 16px' }}>Formación</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {credentials.education.map(c => (
+                  <div key={c.title} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                    <span style={{ fontSize: 20, lineHeight: 1.4, flexShrink: 0 }}>{c.icon}</span>
+                    <div>
+                      <p style={{ fontFamily: FONTS.heading, fontSize: 14, fontWeight: 700, color: COLORS.textWhite, margin: 0, lineHeight: 1.3 }}>{c.title}</p>
+                      <p style={{ fontFamily: FONTS.body, fontSize: 12, color: COLORS.textDim, margin: '3px 0 0' }}>{c.issuer}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* ── 6-card grid ─────────────────────────────────────── */}
+        {/* ── Diferencial — callout ancho ───────────────────────── */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 'clamp(12px, 1.6vw, 20px)',
-        }}
-          className="whyme-grid"
-        >
-          {whyMeItems.map(item => (
-            <WhyCard key={item.id} item={item} />
-          ))}
+          background: 'rgba(0,217,255,0.04)',
+          border: '1.5px solid rgba(0,217,255,0.15)',
+          borderRadius: 16,
+          padding: 'clamp(28px, 4vh, 44px) clamp(28px, 4vw, 48px)',
+        }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 'clamp(24px, 4vw, 48px)', alignItems: 'center' }} className="diff-cols">
+            <div>
+              <p style={{ fontFamily: FONTS.mono, fontSize: 10, letterSpacing: '0.18em', color: COLORS.accentCyan, textTransform: 'uppercase', margin: '0 0 12px' }}>
+                Diferencial · Analytics incluido
+              </p>
+              <h3 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(20px, 2.5vw, 28px)', fontWeight: 700, color: COLORS.textWhite, margin: '0 0 12px', lineHeight: 1.25 }}>
+                No solo te hago el sitio.{' '}
+                <span style={{ color: COLORS.accentCyan }}>Te entrego los datos mensuales</span>{' '}
+                para que sepas cómo va tu negocio.
+              </h3>
+            </div>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {DIFFERENTIALS.map(d => (
+                <li key={d} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                  <span style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0, background: 'rgba(0,217,255,0.1)', border: '1px solid rgba(0,217,255,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 5.5L4 7.5L8 3" stroke="#00D9FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </span>
+                  <span style={{ fontFamily: FONTS.body, fontSize: 14, color: COLORS.textLight, lineHeight: 1.55 }}>{d}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{ marginTop: 'clamp(32px, 5vh, 48px)', display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <a href="/contacto" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: FONTS.body, fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', color: '#0F1419', background: COLORS.accentCyan, padding: '13px 28px', borderRadius: 9, boxShadow: '0 4px 20px rgba(0,217,255,0.25)' }}>
+            HABLEMOS →
+          </a>
+          <a href="/portfolio" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: FONTS.body, fontSize: 13, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', color: COLORS.textMuted, background: 'rgba(255,255,255,0.05)', border: '1.5px solid rgba(255,255,255,0.1)', padding: '13px 28px', borderRadius: 9 }}>
+            VER PROYECTOS
+          </a>
         </div>
       </Container>
 
       <style>{`
-        .creds-grid > * { min-width: 0; }
-        @media (max-width: 960px) {
-          .whyme-grid  { grid-template-columns: repeat(2, 1fr) !important; }
-        }
-        @media (max-width: 640px) {
-          .creds-grid  { flex-direction: column !important; }
-          .whyme-grid  { grid-template-columns: 1fr !important; }
+        @media (max-width: 820px) {
+          .about-cols { grid-template-columns: 1fr !important; }
+          .diff-cols  { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </section>

@@ -1,110 +1,104 @@
 import { COLORS, FONTS } from '../utils/constants'
 import LegalLayout from '../components/layouts/LegalLayout'
 
-const H2 = ({ children }) => (
-  <h2 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(20px, 2.5vw, 26px)', fontWeight: 700, color: COLORS.textWhite, margin: '40px 0 14px', lineHeight: 1.2 }}>
+const Section = ({ num, title, children }) => (
+  <div style={{ marginBottom: 40 }}>
+    <h2 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(18px, 2.2vw, 22px)', fontWeight: 700, color: COLORS.textWhite, margin: '0 0 14px', lineHeight: 1.3 }}>
+      {num}. {title}
+    </h2>
     {children}
-  </h2>
+  </div>
 )
-const H3 = ({ children }) => (
-  <h3 style={{ fontFamily: FONTS.heading, fontSize: 18, fontWeight: 700, color: COLORS.textWhite, margin: '24px 0 10px' }}>
+const P = ({ children }) => <p style={{ fontFamily: FONTS.body, fontSize: 15, color: '#CBD5E1', lineHeight: 1.8, margin: '0 0 12px' }}>{children}</p>
+const Strong = ({ children }) => <strong style={{ color: COLORS.textWhite }}>{children}</strong>
+const Cyan = ({ href, children }) => (
+  <a href={href} target={href?.startsWith('http') ? '_blank' : undefined} rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined} style={{ color: COLORS.accentCyan }}>
     {children}
-  </h3>
+  </a>
 )
-const P = ({ children }) => (
-  <p style={{ fontFamily: FONTS.body, fontSize: 15, color: '#E2E8F0', lineHeight: 1.8, margin: '0 0 14px' }}>
-    {children}
-  </p>
-)
-const Li = ({ children }) => (
-  <li style={{ fontFamily: FONTS.body, fontSize: 15, color: '#E2E8F0', lineHeight: 1.8, marginBottom: 6 }}>
-    {children}
-  </li>
-)
+
+function CookieTable({ rows }) {
+  const thSt = {
+    fontFamily: FONTS.mono, fontSize: 10, fontWeight: 600, letterSpacing: '0.1em',
+    textTransform: 'uppercase', color: COLORS.textDim, padding: '10px 16px',
+    textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.07)',
+  }
+  const tdSt = {
+    fontFamily: FONTS.body, fontSize: 13, color: '#CBD5E1', padding: '10px 16px',
+    borderBottom: '1px solid rgba(255,255,255,0.04)', verticalAlign: 'top',
+  }
+  return (
+    <div style={{ overflowX: 'auto', marginBottom: 16 }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(255,255,255,0.02)', borderRadius: 10, overflow: 'hidden' }}>
+        <thead>
+          <tr style={{ background: 'rgba(255,255,255,0.04)' }}>
+            {['Nombre', 'Proveedor', 'Finalidad', 'Duración'].map(h => <th key={h} style={thSt}>{h}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={i}>{r.map((cell, j) => <td key={j} style={tdSt}>{cell}</td>)}</tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+const ESSENTIAL = [
+  ['sergiolab_cookie_consent', 'SergioLab', 'Guarda tu preferencia de consentimiento de cookies', '1 año'],
+]
+const ANALYTICS = [
+  ['_ga', 'Google Analytics', 'Distingue usuarios únicos asignando un ID aleatorio', '2 años'],
+  ['_ga_*', 'Google Analytics', 'Almacena el estado y datos de sesión (GA4)', '2 años'],
+]
 
 export default function Cookies() {
   return (
     <LegalLayout>
       <p style={{ fontFamily: FONTS.mono, fontSize: 11, color: COLORS.accentCyan, letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 12px' }}>
-        Legal
+        Legal · Cookies
       </p>
-      <h1 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 800, color: COLORS.textWhite, margin: '0 0 10px', lineHeight: 1.1 }}>
+      <h1 style={{ fontFamily: FONTS.heading, fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 800, color: COLORS.textWhite, margin: '0 0 8px', lineHeight: 1.1 }}>
         Política de Cookies
       </h1>
       <p style={{ fontFamily: FONTS.body, fontSize: 13, color: COLORS.textDim, margin: '0 0 48px' }}>
-        Última actualización: 25 de mayo de 2025
+        Última actualización: 3 de junio de 2026
       </p>
 
-      <H2>1. Qué son las cookies</H2>
-      <P>
-        Las cookies son pequeños ficheros de texto almacenados en tu dispositivo cuando visitas
-        un sitio web. Se usan para recordar información sobre tu visita y mejorar la experiencia.
-      </P>
+      <Section num={1} title="¿Qué son las cookies?">
+        <P>Las cookies son pequeños ficheros de texto que los sitios web almacenan en tu navegador al visitarlos. Sirven para recordar preferencias, analizar el tráfico y mejorar la experiencia. Este sitio usa <Strong>localStorage</Strong> para guardar tu preferencia de consentimiento, y cookies de Google Analytics (solo si las aceptas).</P>
+      </Section>
 
-      <H2>2. Tipos de cookies que usamos</H2>
+      <Section num={2} title="Cookies estrictamente necesarias">
+        <P>Imprescindibles para el funcionamiento del sitio. No requieren consentimiento y no se pueden desactivar sin afectar al funcionamiento.</P>
+        <CookieTable rows={ESSENTIAL} />
+      </Section>
 
-      <H3>📌 Cookies Esenciales (siempre activas)</H3>
-      <P>
-        <strong style={{ color: COLORS.textWhite }}>Función:</strong> Mantener el sitio funcionando correctamente.<br />
-        <strong style={{ color: COLORS.textWhite }}>Consentimiento:</strong> No necesario — son obligatorias.<br />
-        <strong style={{ color: COLORS.textWhite }}>Duración:</strong> Sesión.
-      </P>
+      <Section num={3} title="Cookies analíticas (solo con consentimiento)">
+        <P>Usamos Google Analytics 4 para entender cómo se usa el sitio de forma anónima y agregada. Solo se activan si aceptas las cookies analíticas. Puedes consultar la <Cyan href="https://policies.google.com/privacy">política de privacidad de Google</Cyan>.</P>
+        <CookieTable rows={ANALYTICS} />
+      </Section>
 
-      <H3>📊 Cookies Analíticas — Google Analytics</H3>
-      <P>
-        <strong style={{ color: COLORS.textWhite }}>Función:</strong> Analizar cómo usas el sitio (páginas, tiempo, dispositivo).<br />
-        <strong style={{ color: COLORS.textWhite }}>Consentimiento:</strong> Sí — opt-in requerido.<br />
-        <strong style={{ color: COLORS.textWhite }}>Proveedor:</strong> Google LLC.<br />
-        <strong style={{ color: COLORS.textWhite }}>Cookies:</strong> _ga, _ga_*, _gid.<br />
-        <strong style={{ color: COLORS.textWhite }}>Duración:</strong> 26 meses.
-      </P>
+      <Section num={4} title="Cómo gestionar o eliminar las cookies">
+        <P>Puedes cambiar tus preferencias en cualquier momento haciendo clic en «Política de cookies» en el pie de página. También puedes gestionarlas desde tu navegador:</P>
+        <ul style={{ paddingLeft: 20, margin: '0 0 12px' }}>
+          {[
+            ['Chrome', 'https://support.google.com/chrome/answer/95647'],
+            ['Firefox', 'https://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-que-los-sitios-we'],
+            ['Safari', 'https://support.apple.com/es-es/guide/safari/sfri11471/mac'],
+            ['Edge', 'https://support.microsoft.com/es-es/microsoft-edge/eliminar-las-cookies-en-microsoft-edge-63947406'],
+          ].map(([name, url]) => (
+            <li key={name} style={{ fontFamily: FONTS.body, fontSize: 15, color: '#CBD5E1', lineHeight: 1.8, marginBottom: 4 }}>
+              <Cyan href={url}>{name}</Cyan>
+            </li>
+          ))}
+        </ul>
+      </Section>
 
-      <H3>⚙️ Cookies de Preferencia</H3>
-      <P>
-        <strong style={{ color: COLORS.textWhite }}>Función:</strong> Recordar si aceptaste el banner de cookies.<br />
-        <strong style={{ color: COLORS.textWhite }}>Cookie:</strong> sergiolab-consent.<br />
-        <strong style={{ color: COLORS.textWhite }}>Duración:</strong> 1 año.
-      </P>
-
-      <H3>🎯 Cookies de Marketing</H3>
-      <P>
-        Actualmente <strong style={{ color: COLORS.textWhite }}>no usamos</strong> cookies de marketing
-        (Facebook Pixel, LinkedIn Insight, etc.). Se añadirán con consentimiento explícito si se implementan.
-      </P>
-
-      <H2>3. Gestión del consentimiento</H2>
-      <P>Al visitar el sitio por primera vez, un banner te permite:</P>
-      <ul style={{ paddingLeft: 22, marginBottom: 14 }}>
-        <Li>✅ <strong style={{ color: COLORS.textWhite }}>Aceptar todo:</strong> Activa analytics y preferencias</Li>
-        <Li>❌ <strong style={{ color: COLORS.textWhite }}>Rechazar:</strong> Solo cookies esenciales</Li>
-      </ul>
-      <P>Puedes cambiar tu preferencia en cualquier momento contactando en info@sergiolab.es.</P>
-
-      <H2>4. Cómo desactivar cookies en tu navegador</H2>
-      <ul style={{ paddingLeft: 22, marginBottom: 14 }}>
-        <Li><strong style={{ color: COLORS.textWhite }}>Chrome:</strong> Configuración → Privacidad y seguridad → Cookies</Li>
-        <Li><strong style={{ color: COLORS.textWhite }}>Firefox:</strong> Configuración → Privacidad → Cookies y datos del sitio</Li>
-        <Li><strong style={{ color: COLORS.textWhite }}>Safari:</strong> Preferencias → Privacidad → Gestionar datos del sitio</Li>
-        <Li><strong style={{ color: COLORS.textWhite }}>Edge:</strong> Configuración → Privacidad, búsqueda y servicios</Li>
-      </ul>
-      <P style={{ color: COLORS.textDim, fontStyle: 'italic' }}>
-        ⚠️ Desactivar cookies esenciales puede afectar el funcionamiento del sitio.
-      </P>
-
-      <H2>5. Proveedores de terceros</H2>
-      <P>
-        <strong style={{ color: COLORS.textWhite }}>Google Analytics (Google LLC):</strong><br />
-        Política de privacidad:{' '}
-        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: COLORS.accentCyan }}>
-          policies.google.com/privacy
-        </a>
-      </P>
-
-      <H2>6. Contacto</H2>
-      <P>
-        Preguntas sobre cookies:{' '}
-        <a href="mailto:info@sergiolab.es" style={{ color: COLORS.accentCyan }}>info@sergiolab.es</a>
-      </P>
+      <Section num={5} title="Actualizaciones">
+        <P>Podemos actualizar esta política cuando cambiemos los servicios utilizados. La versión vigente siempre estará disponible en esta URL. ¿Dudas? <Cyan href="mailto:info@sergiolab.es">info@sergiolab.es</Cyan></P>
+      </Section>
     </LegalLayout>
   )
 }

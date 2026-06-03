@@ -76,7 +76,10 @@ export default function FAQ() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, typing])
 
-  const handleSend = (text) => {
+  // Claude API endpoint — set VITE_CHAT_ENDPOINT in .env.local to enable
+  const ENDPOINT = import.meta.env.VITE_CHAT_ENDPOINT
+
+  const handleSend = async (text) => {
     const q = (text || input).trim()
     if (!q) return
     setInput('')
@@ -85,26 +88,43 @@ export default function FAQ() {
     setMessages(m => [...m, userMsg])
     setTyping(true)
 
-    setTimeout(() => {
-      const match = findAnswer(q)
-      const newExchanges = exchanges + 1
-      setExchanges(newExchanges)
-      setTyping(false)
+    const newExchanges = exchanges + 1
+    setExchanges(newExchanges)
 
-      if (match) {
-        setMessages(m => [...m, {
-          id: Date.now() + 1, from: 'bot',
-          text: match.answer,
-          showCTA: newExchanges >= 2,
-        }])
-      } else {
-        setMessages(m => [...m, {
-          id: Date.now() + 1, from: 'bot',
-          text: 'Buena pregunta. Para darte una respuesta personalizada sobre tu proyecto concreto, lo mejor es que hablemos directamente. Te respondo en menos de 24 horas.',
-          showCTA: true,
-        }])
-      }
-    }, 900 + Math.random() * 400)
+    let botText = null
+
+    // Try real Claude API via proxy endpoint
+    if (ENDPOINT) {
+      try {
+        const history = messages
+          .filter(m => m.from !== 'bot' || !m.showCTA)  // exclude CTA messages from context
+          .map(m => ({ role: m.from === 'user' ? 'user' : 'assistant', content: m.text }))
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: q, history }),
+        })
+        if (res.ok) {
+          const data = await res.json()
+          botText = data.text ?? data.content ?? null
+        }
+      } catch { /* fall through to keyword matching */ }
+    }
+
+    // Keyword-matching fallback (no API key needed)
+    if (!botText) {
+      const match = findAnswer(q)
+      botText = match
+        ? match.answer
+        : 'Buena pregunta. Para darte una respuesta personalizada sobre tu proyecto, lo mejor es que hablemos directamente. Te respondo en menos de 24 horas.'
+    }
+
+    setTyping(false)
+    setMessages(m => [...m, {
+      id: Date.now() + 1, from: 'bot',
+      text: botText,
+      showCTA: newExchanges >= 2 || !findAnswer(q),
+    }])
   }
 
   const handleKey = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() } }
