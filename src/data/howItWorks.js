@@ -1,0 +1,38 @@
+export const steps = [
+  {
+    id: 1,
+    number: '01',
+    title: 'Llamada Inicial',
+    subtitle: '15 min · Gratis',
+    description: 'Entendemos tu negocio y tus objetivos. Sin compromiso.',
+    accent: '#00D9FF',
+    icon: 'phone',
+  },
+  {
+    id: 2,
+    number: '02',
+    title: 'Desarrollo',
+    subtitle: 'React · Tech profesional',
+    description: 'Stack moderno optimizado para velocidad. Listo en días.',
+    accent: '#10B981',
+    icon: 'code',
+  },
+  {
+    id: 3,
+    number: '03',
+    title: 'Deploy',
+    subtitle: 'Testing · Publicación',
+    description: 'Pruebas en todos los dispositivos. Tu web en producción.',
+    accent: '#8B5CF6',
+    icon: 'rocket',
+  },
+  {
+    id: 4,
+    number: '04',
+    title: 'Datos Mensuales',
+    subtitle: 'Dashboard · Analytics',
+    description: 'Informe mensual con métricas reales. Sabes cómo va tu negocio.',
+    accent: '#F59E0B',
+    icon: 'chart',
+  },
+]

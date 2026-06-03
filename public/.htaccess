@@ -1,0 +1,6 @@
+# SPA routing — redirect all non-file requests to index.html (Hostinger / Apache)
+Options -MultiViews
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ /index.html [L]
