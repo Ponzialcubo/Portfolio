@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ChatProvider } from './context/ChatContext'
 import AnimatedBackground from './components/common/AnimatedBackground'
 import CookieBanner from './components/common/CookieBanner'
 import FloatingChat from './components/common/FloatingChat'
@@ -27,7 +28,7 @@ const S = ({ children }) => (
 
 export default function App() {
   return (
-    <>
+    <ChatProvider>
       <AnimatedBackground />
       <CookieBanner />
       <FloatingChat />
@@ -52,6 +53,6 @@ export default function App() {
           <Route path="/terms"   element={<S><Terms /></S>} />
         </Routes>
       </BrowserRouter>
-    </>
+    </ChatProvider>
   )
 }

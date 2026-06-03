@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { COLORS, FONTS } from '../../utils/constants'
 import { faqs } from '../../data/faq'
+import { useChat } from '../../context/ChatContext'
 
 // ── Keyword matching (same as FAQ.jsx) ───────────────────────────────────────
 const KEYWORD_MAP = [
@@ -72,6 +73,7 @@ function BotText({ text }) {
 }
 
 export default function FloatingChat() {
+  const { startChat: startChatCtx } = useChat()
   const [open, setOpen]             = useState(false)
   const [started, setStarted]       = useState(false)   // pre-chat form completed
   const [userData, setUserData]     = useState({ name: '', email: '' })
@@ -137,9 +139,25 @@ export default function FloatingChat() {
 
   const handleStartChat = (e) => {
     e.preventDefault()
-    const name = preForm.name.trim()
+    const name  = preForm.name.trim()
     const email = preForm.email.trim()
     if (!name || !email) return
+
+    // Guarda en contexto para que FAQ.jsx lo lea
+    startChatCtx(name, email)
+
+    // Si hay sección #faq en la página actual → scroll y cierra el panel
+    const faqEl = document.getElementById('faq')
+    if (faqEl) {
+      setOpen(false)
+      setTimeout(() => {
+        faqEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        window.dispatchEvent(new CustomEvent('faq-chat-start', { detail: { name, email } }))
+      }, 150)
+      return
+    }
+
+    // Fallback: no hay FAQ en esta página → continúa como panel flotante
     setUserData({ name, email })
     setStarted(true)
     const firstName = name.split(' ')[0]

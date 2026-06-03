@@ -1,8 +1,9 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { COLORS, FONTS } from '../../utils/constants'
 import Container from '../common/Container'
 import { faqs } from '../../data/faq'
 import { useScrollAnimations } from '../../hooks/useScrollAnimations'
+import { useChat } from '../../context/ChatContext'
 
 // ── Keyword matching ─────────────────────────────────────────────────────────
 // Mapeo de palabras clave a índices del array `faqs`.
@@ -55,32 +56,81 @@ function TypingBubble() {
   )
 }
 
+const SEND_EP = import.meta.env.VITE_CHAT_ENDPOINT?.replace('/chat', '/send-conversation') || '/api/send-conversation'
+
 export default function FAQ() {
   const sectionRef = useRef(null)
-  const bottomRef = useRef(null)
-  const inputRef = useRef(null)
+  const inputRef   = useRef(null)
   useScrollAnimations(sectionRef)
 
-  const [messages, setMessages] = useState([
-    {
-      id: 0, from: 'bot',
-      text: '¡Hola! Soy el asistente de SergioLab. ¿Qué duda tienes sobre el proceso de desarrollo o los servicios? Puedes preguntarme cualquier cosa.',
-      showCTA: false,
-    },
-  ])
-  const [input, setInput] = useState('')
+  const { userData, chatStarted, startChat } = useChat()
+
+  // Pre-form local (para acceso directo a /contacto sin pasar por FloatingChat)
+  const [preForm, setPreForm]   = useState({ name: '', email: '' })
+  const [faqStarted, setFaqStarted] = useState(false)
+  const [autoSent, setAutoSent]     = useState(false)
+
+  // Mensajes del chat
+  const [messages, setMessages] = useState([])
+  const [input, setInput]   = useState('')
   const [typing, setTyping] = useState(false)
   const [exchanges, setExchanges] = useState(0)
 
-  // Scroll ONLY the chat container — never the whole page
   const chatContainerRef = useRef(null)
+
+  // Determina si el chat está activo: contexto (vino del FloatingChat) o form local
+  const isStarted = chatStarted || faqStarted
+  const activeUser = chatStarted ? userData : preForm
+
+  // Arranca el chat con el usuario
+  const initChat = useCallback((name) => {
+    const firstName = name.split(' ')[0]
+    setMessages([{ id: 0, from: 'bot', text: `Hola ${firstName}, cuéntame qué proyecto tienes en mente.`, showCTA: false, showAIButton: false }])
+    setTimeout(() => inputRef.current?.focus(), 200)
+  }, [])
+
+  // Cuando el contexto se activa (usuario vino del FloatingChat)
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    if (chatStarted && !faqStarted) {
+      initChat(userData.name)
     }
+  }, [chatStarted, faqStarted, userData.name, initChat])
+
+  // Cuando el evento 'faq-chat-start' llega (FloatingChat hizo scroll aquí)
+  useEffect(() => {
+    const handler = (e) => {
+      const { name } = e.detail || {}
+      if (name) initChat(name)
+    }
+    window.addEventListener('faq-chat-start', handler)
+    return () => window.removeEventListener('faq-chat-start', handler)
+  }, [initChat])
+
+  const handlePreForm = (e) => {
+    e.preventDefault()
+    const name  = preForm.name.trim()
+    const email = preForm.email.trim()
+    if (!name || !email) return
+    startChat(name, email)
+    setFaqStarted(true)
+    initChat(name)
+  }
+
+  const sendTranscript = useCallback(() => {
+    const { name, email } = activeUser
+    if (!email || messages.length <= 1 || autoSent) return
+    setAutoSent(true)
+    fetch(SEND_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, messages }),
+    }).catch(() => {})
+  }, [activeUser, messages, autoSent])
+
+  useEffect(() => {
+    if (chatContainerRef.current) chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
   }, [messages, typing])
 
-  // Claude API endpoint — set VITE_CHAT_ENDPOINT in .env.local to enable
   const ENDPOINT = import.meta.env.VITE_CHAT_ENDPOINT
 
   const handleSend = async (text) => {
@@ -106,7 +156,7 @@ export default function FAQ() {
         const res = await fetch(ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: q, history }),
+          body: JSON.stringify({ message: q, history, name: activeUser.name, email: activeUser.email }),
         })
         if (res.ok) {
           const data = await res.json()
@@ -192,7 +242,7 @@ export default function FAQ() {
           </div>
 
           {/* Right: chat */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0, position: 'sticky', top: 'clamp(80px,12vh,100px)' }}>
             {/* Chat window */}
             <div style={{
               background: '#0a1018',
@@ -209,8 +259,32 @@ export default function FAQ() {
                 <span style={{ fontFamily: FONTS.mono, fontSize: 9, color: COLORS.textDim, letterSpacing: '0.1em' }}>SERGIOLAB AI</span>
               </div>
 
+              {/* Pre-form — solo si no hay usuario aún */}
+              {!isStarted && (
+                <form onSubmit={handlePreForm} style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <p style={{ margin: '0 0 4px', fontFamily: FONTS.heading, fontSize: 16, fontWeight: 700, color: COLORS.textWhite }}>
+                    Cuéntame tu proyecto
+                  </p>
+                  <p style={{ margin: '0 0 8px', fontFamily: FONTS.body, fontSize: 13, color: COLORS.textMuted, lineHeight: 1.5 }}>
+                    Déjame tus datos y te ayudo a definirlo antes de hablar con Sergio.
+                  </p>
+                  <input required type="text" placeholder="Tu nombre" value={preForm.name}
+                    onChange={e => setPreForm(f => ({ ...f, name: e.target.value }))}
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 9, padding: '11px 14px', fontFamily: FONTS.body, fontSize: 14, color: COLORS.textWhite, outline: 'none', width: '100%', boxSizing: 'border-box' }}
+                  />
+                  <input required type="email" placeholder="Tu email" value={preForm.email}
+                    onChange={e => setPreForm(f => ({ ...f, email: e.target.value }))}
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 9, padding: '11px 14px', fontFamily: FONTS.body, fontSize: 14, color: COLORS.textWhite, outline: 'none', width: '100%', boxSizing: 'border-box' }}
+                  />
+                  <button type="submit" style={{ fontFamily: FONTS.body, fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0F1419', background: COLORS.accentCyan, border: 'none', borderRadius: 9, padding: '13px 0', cursor: 'pointer', width: '100%' }}>
+                    Iniciar conversación →
+                  </button>
+                  <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 11, color: COLORS.textDim, textAlign: 'center' }}>Sin spam. Solo para que Sergio pueda contactarte.</p>
+                </form>
+              )}
+
               {/* Messages */}
-              <div ref={chatContainerRef} style={{ height: 460, overflowY: 'auto', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+              {isStarted && <div ref={chatContainerRef} style={{ height: 460, overflowY: 'auto', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 18 }}>
                 {messages.map(msg => (
                   <div key={msg.id}>
                     {msg.from === 'bot' ? (
@@ -245,11 +319,28 @@ export default function FAQ() {
                   </div>
                 ))}
                 {typing && <TypingBubble />}
-              </div>
+              </div>}
+
+              {/* Botón enviar a Sergio — solo cuando hay conversación */}
+              {isStarted && exchanges >= 2 && !autoSent && (
+                <div style={{ padding: '10px 18px', borderTop: '1px solid rgba(0,217,255,0.08)' }}>
+                  <button onClick={sendTranscript} style={{ width: '100%', fontFamily: FONTS.body, fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: COLORS.accentCyan, background: 'rgba(0,217,255,0.07)', border: '1px solid rgba(0,217,255,0.25)', borderRadius: 7, padding: '9px 0', cursor: 'pointer', transition: 'background 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,217,255,0.14)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,217,255,0.07)'}
+                  >
+                    Enviar conversación a Sergio →
+                  </button>
+                </div>
+              )}
+              {isStarted && autoSent && (
+                <div style={{ padding: '10px 18px', borderTop: '1px solid rgba(0,217,255,0.08)', textAlign: 'center' }}>
+                  <p style={{ margin: 0, fontFamily: FONTS.body, fontSize: 12, color: '#10B981' }}>Enviado ✓ Sergio te contactará hoy.</p>
+                </div>
+              )}
             </div>
 
-            {/* Input */}
-            <div style={{ background: '#0a1018', border: '1.5px solid rgba(0,217,255,0.15)', borderTop: '1px solid rgba(0,217,255,0.08)', borderRadius: '0 0 16px 16px', padding: '14px 18px', display: 'flex', gap: 10, boxShadow: '0 8px 40px rgba(0,0,0,0.4)' }}>
+            {/* Input — solo visible cuando la conversación está activa */}
+            {isStarted && <div style={{ background: '#0a1018', border: '1.5px solid rgba(0,217,255,0.15)', borderTop: '1px solid rgba(0,217,255,0.08)', borderRadius: '0 0 16px 16px', padding: '14px 18px', display: 'flex', gap: 10, boxShadow: '0 8px 40px rgba(0,0,0,0.4)' }}>
               <input
                 ref={inputRef}
                 value={input}
@@ -268,7 +359,7 @@ export default function FAQ() {
                   <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke={input.trim() && !typing ? '#0F1419' : COLORS.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-            </div>
+            </div>}
           </div>
         </div>
       </Container>
