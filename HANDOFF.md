@@ -94,6 +94,17 @@ BORRADOS components/{Footer,Hero,Navigation,Portfolio}.jsx
 con nombre real **Sergio Contreras**, LinkedIn (sergiocontreras-dev) y GitHub
 (Ponzialcubo). Ubicación "Madrid · Remoto / Híbrido".
 
+## ✅ Rediseño profesional completo 2026-06-03 (d)
+- **Stack:** grid animado GSAP stagger, contador, hover por badge.
+- **HowItWorks:** carrusel interactivo (tabs + progress bar GSAP + número grande).
+- **Testimonials:** aviso placeholder eliminado, cards con estrellas + hover lift.
+- **FAQ:** acordeón → chat IA con keyword-matching sobre `data/faq.js`. Typing
+  indicator, CTA automático tras 2 intercambios, chips de sugerencia.
+- **ContactForm:** campo presupuesto, focus states dinámicos, submit CTA.
+- **Footer:** CTA band + grid 3 cols (Brand+Social / Nav / Proyectos) + iconos SVG.
+- `hooks/useStaggerReveal.js` — nuevo hook GSAP stagger reutilizable.
+- Build ✅ · Push `d27f8f3..b77d5c7`
+
 ## ✅ SEO técnico 2026-06-03 (c) — fix Seobility
 La SPA servía HTML vacío → Seobility 42% (Link structure 0%, contenido bajo).
 - **`scripts/prerender.js`**: tras `vite build`, inyecta contenido estático

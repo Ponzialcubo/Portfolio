@@ -2,6 +2,25 @@
 
 > Actualizar al final de cada sesión: qué se hizo, qué se decidió, qué queda.
 
+## Sesión 2026-06-03 (d) — Rediseño profesional completo
+- **`hooks/useStaggerReveal.js`** (nuevo): GSAP ScrollTrigger + stagger para grupos
+  de tarjetas. Se usa en Stack y Testimonials.
+- **Stack:** grid con contador de tecnologías, animación GSAP stagger entrada,
+  hover por badge, borde top-accent por categoría.
+- **HowItWorks:** reemplazado el grid estático por carrusel horizontal interactivo
+  con tabs de paso, barra de progreso GSAP, panel de contenido animado con GSAP
+  `fromTo`, número grande decorativo, controles prev/next.
+- **Testimonials:** eliminado el aviso "testimonios de ejemplo". Cards mejoradas
+  con estrellas, hover con lift y GSAP stagger.
+- **FAQ:** acordeón eliminado → widget de **chat IA** con keyword-matching sobre
+  `data/faq.js`, indicador de typing animado, CTA automático al formulario tras
+  2 intercambios, sugerencias rápidas en el lateral.
+- **ContactForm:** rediseñado completo — campo presupuesto, focus states, colores
+  dinámicos, submit con boxShadow, mensaje de privacidad.
+- **Footer:** CTA band prominente ("Cuéntame tu proyecto. Te respondo hoy."),
+  grid 3 columnas (Brand+Social / Nav / Proyectos), iconos LinkedIn/GitHub SVG.
+- **Build** ✅ limpio. Push a GitHub `d27f8f3..b77d5c7`.
+
 ## Sesión 2026-06-03 (c) — SEO técnico: prerender + server config
 - **Causa raíz detectada:** la SPA servía HTML vacío → Seobility daba 42% on-page,
   Link structure 0%, contenido bajo, sin estructura.
