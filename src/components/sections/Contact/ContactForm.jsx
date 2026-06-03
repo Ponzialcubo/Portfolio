@@ -12,11 +12,11 @@ const PROJECT_TYPES = [
 ]
 
 const BUDGETS = [
-  { value: '<1k',  label: 'Hasta 1.000 €  — Landing simple' },
-  { value: '1-3k', label: '1.000 – 3.000 €  — Web corporativa' },
-  { value: '3-7k', label: '3.000 – 7.000 €  — E-commerce / Sistema' },
-  { value: '>7k',  label: 'Más de 7.000 €  — Plataforma compleja' },
-  { value: 'nse',  label: 'No lo sé aún' },
+  { value: '<800',   label: 'Hasta 800 €  — Landing sencilla' },
+  { value: '800-2k', label: '800 – 2.000 €  — Web corporativa' },
+  { value: '2-5k',   label: '2.000 – 5.000 €  — E-commerce / Sistema' },
+  { value: '>5k',    label: 'Más de 5.000 €  — Proyecto complejo' },
+  { value: 'nse',    label: 'No lo sé aún' },
 ]
 
 const inputBase = {

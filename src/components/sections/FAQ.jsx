@@ -72,8 +72,12 @@ export default function FAQ() {
   const [typing, setTyping] = useState(false)
   const [exchanges, setExchanges] = useState(0)
 
+  // Scroll ONLY the chat container — never the whole page
+  const chatContainerRef = useRef(null)
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
   }, [messages, typing])
 
   // Claude API endpoint — set VITE_CHAT_ENDPOINT in .env.local to enable
@@ -191,7 +195,7 @@ export default function FAQ() {
               </div>
 
               {/* Messages */}
-              <div style={{ height: 380, overflowY: 'auto', padding: '20px 18px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div ref={chatContainerRef} style={{ height: 380, overflowY: 'auto', padding: '20px 18px', display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {messages.map(msg => (
                   <div key={msg.id}>
                     {msg.from === 'bot' ? (
@@ -221,7 +225,6 @@ export default function FAQ() {
                   </div>
                 ))}
                 {typing && <TypingBubble />}
-                <div ref={bottomRef} />
               </div>
             </div>
 

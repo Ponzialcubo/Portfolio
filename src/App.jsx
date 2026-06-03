@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AnimatedBackground from './components/common/AnimatedBackground'
 import CookieBanner from './components/common/CookieBanner'
+import FloatingChat from './components/common/FloatingChat'
 import LoadingSpinner from './components/common/LoadingSpinner'
 
 // ── Main pages (lazy — each is its own route) ─────────────────────────────
@@ -29,6 +30,7 @@ export default function App() {
     <>
       <AnimatedBackground />
       <CookieBanner />
+      <FloatingChat />
       <BrowserRouter>
         <Routes>
           {/* Home */}
