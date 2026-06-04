@@ -74,9 +74,9 @@ export default function ProjectCard({ project, isActive, cardWidth, isHovered })
       {/* Border Beam — visible siempre, más brillante en hover */}
       <BorderBeam
         color={project.accent}
-        size={140}
-        duration={showHover ? 3 : 6}
-        opacity={showHover ? 0.9 : 0.35}
+        thickness={1.5}
+        duration={showHover ? 1.8 : 4}
+        opacity={showHover ? 1 : 0.5}
       />
       {/* Glare — sigue el ratón, refuerza la sensación premium */}
       <GlareOverlay color={`${project.accent}18`} size="55%" />

@@ -5,6 +5,8 @@ import AnimatedBackground from './components/common/AnimatedBackground'
 import CookieBanner from './components/common/CookieBanner'
 import FloatingChat from './components/common/FloatingChat'
 import LoadingSpinner from './components/common/LoadingSpinner'
+import SpotlightCursor from './components/common/SpotlightCursor'
+import GrainOverlay from './components/common/GrainOverlay'
 
 // ── Main pages (lazy — each is its own route) ─────────────────────────────
 const HomePage      = lazy(() => import('./pages/HomePage'))
@@ -29,6 +31,8 @@ const S = ({ children }) => (
 export default function App() {
   return (
     <ChatProvider>
+      <GrainOverlay />
+      <SpotlightCursor />
       <AnimatedBackground />
       <CookieBanner />
       <FloatingChat />

@@ -79,14 +79,15 @@ export default function Hero() {
               </span>
             </h1>
 
-            <p className="subtitle anim-fade d-350">
-              Diseño y desarrollo web a medida.{' '}
-              <MorphingText
-                words={['E-commerce · Stripe.', 'Sistemas de reservas.', 'Paneles de gestión.', 'IA · Chatbots.', 'SEO & AEO.']}
-                interval={2600}
-                style={{ color: '#00D9FF', fontStyle: 'normal' }}
-              />
-              {' '}Madrid · toda España.
+            <p className="subtitle anim-fade d-350" style={{ display: 'flex', flexDirection: 'column', gap: '0.15em' }}>
+              <span>Diseño y desarrollo web a medida.</span>
+              <span style={{ color: '#00D9FF', minHeight: '1.4em', display: 'block' }}>
+                <MorphingText
+                  words={['E-commerce · Stripe.', 'Sistemas de reservas.', 'Paneles de gestión.', 'IA · Chatbots.', 'SEO y posicionamiento.']}
+                  interval={3000}
+                />
+              </span>
+              <span style={{ opacity: 0.7 }}>Madrid · toda España.</span>
             </p>
 
             <div className="cta-group anim-fade d-500" style={{ marginTop: '-4px' }}>
@@ -94,7 +95,7 @@ export default function Hero() {
                 <a href="/contacto" className="btn-primary">
                   <span aria-hidden="true">→</span> CONTACTAR
                 </a>
-                <BorderBeam color="#00D9FF" size={100} duration={3} opacity={0.7} />
+                <BorderBeam color="#00D9FF" thickness={1.5} duration={2} opacity={0.85} />
               </span>
               <a href="/portfolio" className="btn-secondary">
                 <span aria-hidden="true">●</span> PROYECTOS

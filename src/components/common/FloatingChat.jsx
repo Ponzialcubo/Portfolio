@@ -273,8 +273,8 @@ export default function FloatingChat() {
 
           {/* Messages — solo visibles tras el pre-chat form */}
           {started && <div ref={msgsRef} style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 8px', display: 'flex', flexDirection: 'column', gap: 12, maxHeight: 320 }}>
-            {messages.map(msg => (
-              <div key={msg.id}>
+            {messages.map((msg, i) => (
+              <div key={msg.id} style={{ animation: 'fchat-msg-in 0.3s cubic-bezier(0.16,1,0.3,1) both', animationDelay: `${i === 0 ? 0 : 0}ms` }}>
                 {msg.from === 'bot' ? (
                   <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                     {BOT_ICON}
@@ -356,28 +356,37 @@ export default function FloatingChat() {
       )}
 
       {/* ── Floating button ──────────────────────────────────────── */}
-      <button
-        onClick={handleOpen}
-        aria-label={open ? 'Cerrar chat' : 'Abrir chat de ayuda'}
-        style={{
-          position: 'fixed', bottom: 20, right: 20, zIndex: 9500,
-          width: 56, height: 56, borderRadius: '50%',
-          background: open ? 'rgba(255,255,255,0.08)' : COLORS.accentCyan,
-          border: open ? '1.5px solid rgba(255,255,255,0.15)' : 'none',
-          color: open ? COLORS.textMuted : '#0F1419',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', outline: 'none',
-          boxShadow: open ? 'none' : '0 4px 24px rgba(0,217,255,0.4)',
-          transition: 'background 0.25s, box-shadow 0.25s, transform 0.2s',
-        }}
-        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
-        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-      >
-        {open ? <CloseIcon /> : <ChatIcon />}
-        {badge && !open && (
-          <span style={{ position: 'absolute', top: 2, right: 2, width: 14, height: 14, borderRadius: '50%', background: '#EF4444', border: '2px solid #0F1419', animation: 'fchat-pulse 2s ease-in-out infinite' }} />
+      <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 9500 }}>
+        {/* Anillo pulsante exterior — siempre visible cuando está cerrado */}
+        {!open && (
+          <>
+            <span style={{ position: 'absolute', inset: -4, borderRadius: '50%', border: '1.5px solid rgba(0,217,255,0.4)', animation: 'fchat-ring 2.4s ease-out infinite' }} />
+            <span style={{ position: 'absolute', inset: -4, borderRadius: '50%', border: '1px solid rgba(0,217,255,0.2)', animation: 'fchat-ring 2.4s ease-out 0.8s infinite' }} />
+          </>
         )}
-      </button>
+        <button
+          onClick={handleOpen}
+          aria-label={open ? 'Cerrar chat' : 'Abrir chat de ayuda'}
+          style={{
+            position: 'relative',
+            width: 56, height: 56, borderRadius: '50%',
+            background: open ? 'rgba(255,255,255,0.08)' : COLORS.accentCyan,
+            border: open ? '1.5px solid rgba(255,255,255,0.15)' : 'none',
+            color: open ? COLORS.textMuted : '#0F1419',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', outline: 'none',
+            boxShadow: open ? 'none' : '0 4px 28px rgba(0,217,255,0.5)',
+            transition: 'background 0.25s, box-shadow 0.25s, transform 0.2s',
+          }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          {open ? <CloseIcon /> : <ChatIcon />}
+          {badge && !open && (
+            <span style={{ position: 'absolute', top: 2, right: 2, width: 14, height: 14, borderRadius: '50%', background: '#EF4444', border: '2px solid #0F1419', animation: 'fchat-pulse 2s ease-in-out infinite' }} />
+          )}
+        </button>
+      </div>
 
       <style>{`
         @keyframes fchat-dot {
@@ -391,6 +400,14 @@ export default function FloatingChat() {
         @keyframes fchat-pulse {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0.4; }
+        }
+        @keyframes fchat-msg-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fchat-ring {
+          0%   { transform: scale(1);    opacity: 0.7; }
+          100% { transform: scale(1.6); opacity: 0; }
         }
         input::placeholder { color: rgba(226,232,240,0.25); }
         input:focus { border-color: rgba(0,217,255,0.4) !important; }
