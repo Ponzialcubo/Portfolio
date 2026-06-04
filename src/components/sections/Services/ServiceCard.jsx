@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { COLORS, FONTS } from '../../../utils/constants'
+import GlareOverlay from '../../common/GlareOverlay'
 
 const ArrowRight = ({ size = 12, color = 'currentColor' }) => (
   <svg width={size} height={size} viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -16,6 +17,7 @@ export default function ServiceCard({ service }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
+        position: 'relative',
         background: COLORS.bgCard,
         border: `1.5px solid ${hov ? service.accent + '55' : COLORS.border}`,
         borderRadius: 12,
@@ -28,8 +30,10 @@ export default function ServiceCard({ service }) {
         boxShadow: hov
           ? `0 16px 40px ${service.accent}18, 0 4px 20px rgba(0,0,0,0.4)`
           : '0 2px 16px rgba(0,0,0,0.25)',
+        overflow: 'hidden',
       }}
     >
+      <GlareOverlay color={`${service.accent}15`} size="60%" />
       {/* Icon + number + title */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
         <span style={{ fontSize: 'clamp(28px, 3.5vh, 38px)', lineHeight: 1 }}>{service.icon}</span>

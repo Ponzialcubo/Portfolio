@@ -1,6 +1,9 @@
 import { useRef, useEffect } from 'react'
 import Navigation from '../common/Navigation'
 import TechStack from './TechStack'
+import BorderBeam from '../common/BorderBeam'
+import ShinyText from '../common/ShinyText'
+import MorphingText from '../common/MorphingText'
 
 export default function Hero() {
   const videoRef   = useRef(null)
@@ -60,7 +63,9 @@ export default function Hero() {
           <div className="hero-text-block">
             <p className="tagline anim-fade d-80">
               <span className="tagline-dash" aria-hidden="true" />
-              FULL-STACK DEVELOPER &amp; WEB DESIGNER
+              <ShinyText color="#00D9FF" shimmer="rgba(255,255,255,0.95)" speed={4}>
+                FULL-STACK DEVELOPER &amp; WEB DESIGNER
+              </ShinyText>
             </p>
 
             <h1 className="headline-h1 d-250" style={{ marginBottom: 'clamp(6px, 1.4vh, 16px)' }}>
@@ -75,14 +80,22 @@ export default function Hero() {
             </h1>
 
             <p className="subtitle anim-fade d-350">
-              Diseño y desarrollo web a medida: e-commerce con pagos, sistemas
-              de reserva y paneles de gestión. Madrid · toda España.
+              Diseño y desarrollo web a medida.{' '}
+              <MorphingText
+                words={['E-commerce · Stripe.', 'Sistemas de reservas.', 'Paneles de gestión.', 'IA · Chatbots.', 'SEO & AEO.']}
+                interval={2600}
+                style={{ color: '#00D9FF', fontStyle: 'normal' }}
+              />
+              {' '}Madrid · toda España.
             </p>
 
             <div className="cta-group anim-fade d-500" style={{ marginTop: '-4px' }}>
-              <a href="/contacto" className="btn-primary">
-                <span aria-hidden="true">→</span> CONTACTAR
-              </a>
+              <span style={{ position: 'relative', display: 'inline-block', borderRadius: 8 }}>
+                <a href="/contacto" className="btn-primary">
+                  <span aria-hidden="true">→</span> CONTACTAR
+                </a>
+                <BorderBeam color="#00D9FF" size={100} duration={3} opacity={0.7} />
+              </span>
               <a href="/portfolio" className="btn-secondary">
                 <span aria-hidden="true">●</span> PROYECTOS
               </a>

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FONTS, COLORS } from '../../../utils/constants'
+import BorderBeam from '../../common/BorderBeam'
+import GlareOverlay from '../../common/GlareOverlay'
 
 // ── Wireframe mockup ──────────────────────────────────────────────────────────
 function WireframeMockup({ accent }) {
@@ -58,9 +60,10 @@ export default function ProjectCard({ project, isActive, cardWidth, isHovered })
 
   return (
     <article style={{
+      position: 'relative',
       width: cardWidth,
       background: COLORS.bgCard,
-      border: `1.5px solid ${showHover ? project.accent + '66' : COLORS.border}`,
+      border: `1.5px solid ${showHover ? project.accent + '55' : COLORS.border}`,
       borderRadius: 12, overflow: 'hidden',
       display: 'flex', flexDirection: 'column',
       boxShadow: showHover
@@ -68,6 +71,15 @@ export default function ProjectCard({ project, isActive, cardWidth, isHovered })
         : '0 4px 24px rgba(0,0,0,0.35)',
       transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
     }}>
+      {/* Border Beam — visible siempre, más brillante en hover */}
+      <BorderBeam
+        color={project.accent}
+        size={140}
+        duration={showHover ? 3 : 6}
+        opacity={showHover ? 0.9 : 0.35}
+      />
+      {/* Glare — sigue el ratón, refuerza la sensación premium */}
+      <GlareOverlay color={`${project.accent}18`} size="55%" />
 
       {/* Image */}
       <div style={{
