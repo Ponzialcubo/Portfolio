@@ -11,11 +11,21 @@ const ArrowRight = ({ size = 12, color = 'currentColor' }) => (
 export default function ServiceCard({ service }) {
   const [hov, setHov] = useState(false)
   const [btnHov, setBtnHov] = useState(false)
+  const [glarePos, setGlarePos] = useState(null)
+
+  const onGlareMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    setGlarePos({
+      x: ((e.clientX - rect.left) / rect.width)  * 100,
+      y: ((e.clientY - rect.top)  / rect.height) * 100,
+    })
+  }
 
   return (
     <article
       onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
+      onMouseLeave={() => { setHov(false); setGlarePos(null) }}
+      onMouseMove={onGlareMove}
       style={{
         position: 'relative',
         background: COLORS.bgCard,
@@ -33,7 +43,7 @@ export default function ServiceCard({ service }) {
         overflow: 'hidden',
       }}
     >
-      <GlareOverlay color={`${service.accent}15`} size="60%" />
+      <GlareOverlay color={`${service.accent}15`} size="60%" x={glarePos?.x} y={glarePos?.y} />
       {/* Icon + number + title */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
         <span style={{ fontSize: 'clamp(28px, 3.5vh, 38px)', lineHeight: 1 }}>{service.icon}</span>

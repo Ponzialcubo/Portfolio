@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FONTS, COLORS } from '../../../utils/constants'
 import BorderBeam from '../../common/BorderBeam'
@@ -57,9 +58,21 @@ export default function ProjectCard({ project, isActive, cardWidth, isHovered })
   const showHover = isActive && isHovered
   const isInternal = project.href && project.href.startsWith('/')
   const isExternal = !isInternal && project.href !== '#'
+  const [glarePos, setGlarePos] = useState(null)
+
+  const onGlareMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    setGlarePos({
+      x: ((e.clientX - rect.left) / rect.width)  * 100,
+      y: ((e.clientY - rect.top)  / rect.height) * 100,
+    })
+  }
 
   return (
-    <article style={{
+    <article
+      onMouseMove={onGlareMove}
+      onMouseLeave={() => setGlarePos(null)}
+      style={{
       position: 'relative',
       width: cardWidth,
       background: COLORS.bgCard,
@@ -79,7 +92,7 @@ export default function ProjectCard({ project, isActive, cardWidth, isHovered })
         opacity={showHover ? 1 : 0.5}
       />
       {/* Glare — sigue el ratón, refuerza la sensación premium */}
-      <GlareOverlay color={`${project.accent}18`} size="55%" />
+      <GlareOverlay color={`${project.accent}18`} size="55%" x={glarePos?.x} y={glarePos?.y} />
 
       {/* Image */}
       <div style={{
