@@ -220,15 +220,32 @@ export default function ProjectCard({ project, isActive, cardWidth, isHovered })
               {isExternal ? <ArrowUpRight size={13} color={project.accent} /> : <ArrowRight size={13} color={project.accent} />}
             </a>
           )}
-          {/* Enlace al sitio real (cuando el CTA principal va al caso de estudio) */}
+          {/* Enlace al sitio live */}
           {project.liveUrl && (
             <a
               href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-              style={{ fontFamily: FONTS.body, fontSize: 11, color: COLORS.textDim, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}
-              onMouseEnter={e => e.currentTarget.style.color = project.accent}
-              onMouseLeave={e => e.currentTarget.style.color = COLORS.textDim}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                fontFamily: FONTS.body, fontSize: 'clamp(11px, 1.2vh, 13px)', fontWeight: 600,
+                letterSpacing: '0.08em', textTransform: 'uppercase', textDecoration: 'none',
+                color: COLORS.textMuted,
+                background: 'rgba(255,255,255,0.04)',
+                border: '1.5px solid rgba(255,255,255,0.12)',
+                padding: 'clamp(8px, 1vh, 12px) clamp(14px, 1.5vw, 20px)', borderRadius: 6,
+                transition: 'background 0.22s ease, border-color 0.22s ease, color 0.22s ease',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = `${project.accent}12`
+                e.currentTarget.style.borderColor = `${project.accent}55`
+                e.currentTarget.style.color = project.accent
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
+                e.currentTarget.style.color = COLORS.textMuted
+              }}
             >
-              Ver sitio <ArrowUpRight size={11} color="currentColor" />
+              Ver sitio <ArrowUpRight size={13} color="currentColor" />
             </a>
           )}
         </div>
