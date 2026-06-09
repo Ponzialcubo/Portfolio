@@ -250,6 +250,8 @@ html, body { width: 100%; min-height: 100%; overflow-x: hidden; background: #0F1
 }
 .nav-link:hover              { color: var(--white); }
 .nav-link:hover::after       { width: 100%; }
+.nav-link.is-active          { color: var(--white); }
+.nav-link.is-active::after   { width: 100%; }
 
 .nav-cta {
   font-family: 'Inter', sans-serif;
@@ -568,9 +570,14 @@ html, body { width: 100%; min-height: 100%; overflow-x: hidden; background: #0F1
     flex-direction: column;
     align-items: stretch;
   }
+  .cta-primary-wrap {
+    display: block !important;
+    width: 100% !important;
+  }
   .btn-primary,
   .btn-secondary {
     justify-content: center;
     text-align: center;
+    width: 100%;
   }
 }

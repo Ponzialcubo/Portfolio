@@ -86,7 +86,7 @@ export default function HowItWorks() {
     >
       <Container>
         {/* Step tabs */}
-        <div style={{ display: 'flex', gap: 0, marginBottom: 'clamp(28px, 4vh, 40px)', borderBottom: `1px solid ${COLORS.border}` }}>
+        <div className="process-tabs" style={{ display: 'flex', gap: 0, marginBottom: 'clamp(28px, 4vh, 40px)', borderBottom: `1px solid ${COLORS.border}`, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           {steps.map((s, i) => (
             <button
               key={s.id}
@@ -255,9 +255,12 @@ export default function HowItWorks() {
           .process-layout { grid-template-columns: 1fr !important; }
           .process-layout > *:last-child { display: none; }
         }
+        .process-tabs { scrollbar-width: none; }
+        .process-tabs::-webkit-scrollbar { display: none; }
+        .process-tabs button { flex-shrink: 0; }
         @media (max-width: 560px) {
-          #proceso button[aria-selected] {
-            padding: 10px 12px !important; font-size: 9px !important;
+          .process-tabs button {
+            padding: 10px 14px !important; font-size: 10px !important;
           }
         }
       `}</style>

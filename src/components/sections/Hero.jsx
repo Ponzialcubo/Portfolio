@@ -91,7 +91,7 @@ export default function Hero() {
             </p>
 
             <div className="cta-group anim-fade d-500" style={{ marginTop: '-4px' }}>
-              <span style={{ position: 'relative', display: 'inline-block', borderRadius: 8 }}>
+              <span className="cta-primary-wrap" style={{ position: 'relative', display: 'inline-block', borderRadius: 8 }}>
                 <a href="/contacto" className="btn-primary">
                   <span aria-hidden="true">→</span> CONTACTAR
                 </a>

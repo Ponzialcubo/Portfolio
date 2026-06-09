@@ -64,11 +64,14 @@ export default function Navigation() {
           </Link>
 
           <ul id="desktop-links" role="list">
-            {navLinks.map(({ label, href, isCta }) => (
-              <li key={href}>
-                <NavAnchor href={href} className={isCta ? 'nav-cta' : 'nav-link'}>{label}</NavAnchor>
-              </li>
-            ))}
+            {navLinks.map(({ label, href, isCta }) => {
+              const isActive = !isCta && pathname === href
+              return (
+                <li key={href}>
+                  <NavAnchor href={href} className={isCta ? 'nav-cta' : `nav-link${isActive ? ' is-active' : ''}`}>{label}</NavAnchor>
+                </li>
+              )
+            })}
           </ul>
 
           <button
