@@ -41,9 +41,9 @@ improvisado.
 - Repo local: `c:\Users\ponzi\Desktop\oudh-co-frontend` (ver su `HANDOFF.md`).
 
 ### 2. Casa del Surf — Motor de reservas para alojamiento
-- **URL:** https://casadelsurf.vercel.app · **Badge:** EN DESARROLLO
+- **URL:** https://www.casadelsurf.es · **Badge:** EN PRODUCCIÓN
 - Surf house en Somo (Cantabria). Stack: Next.js 14 + Supabase + NextAuth + Stripe
-  + MotoPress Hotel Booking + Resend + TanStack Query + Framer Motion + Tremor.
+  + Resend + SWR + Zustand + Framer Motion + Recharts.
 - **Capacidades:** reservas por rango de fechas (no stock), pagos Stripe
   (depósito/completo), panel de gestión pensado para personal no técnico,
   calendario visual, sincronización anti-overbooking con OTAs (Booking, etc.),

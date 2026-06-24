@@ -32,19 +32,19 @@ const allProjects = [
     category: 'RESERVAS · HOTEL',
     title: 'Casa del Surf — Motor de Reservas',
     description:
-      'Sistema de reservas y pagos para una surf house: disponibilidad por fechas, cobro con Stripe, panel de gestión para el personal y sincronización anti-overbooking con Booking y otras OTAs.',
+      'Plataforma de gestión completa para el primer Surf House de España (Somo, Cantabria): motor de reservas online con pago, panel para personal no técnico y sincronización anti-overbooking con OTAs (Holidu/Booking).',
     highlights: [
       'Reservas por rango de fechas',
       'Pagos Stripe (depósito)',
       'Panel anti-overbooking',
       'Analítica de ingresos',
     ],
-    tech: ['Next.js 14', 'Supabase', 'Stripe', 'MotoPress'],
+    tech: ['Next.js 14', 'Supabase', 'Stripe', 'NextAuth'],
     accent: '#8B5CF6',
     buttonText: 'Ver caso de estudio',
     href: '/proyectos/casa-del-surf',
-    liveUrl: 'https://casadelsurf.vercel.app',
-    badge: 'EN DESARROLLO',
+    liveUrl: 'https://www.casadelsurf.es',
+    badge: 'EN PRODUCCIÓN',
     bg: 'radial-gradient(ellipse 80% 80% at 25% 40%, rgba(139,92,246,0.09) 0%, transparent 60%), linear-gradient(140deg, #07040f 0%, #0e0818 100%)',
   },
   {

@@ -28,7 +28,7 @@ Todos incluyen mantenimiento mensual opcional (actualizaciones + informe de mét
 
 PROYECTOS REALES (menciona uno solo si encaja, luego no vuelvas a él):
 Oudh & Co (oudh.sergiolab.es) — e-commerce de perfumería árabe en producción. Stripe, chatbot IA, panel admin, facturas PDF.
-Casa del Surf (casadelsurf.vercel.app) — reservas para surf house, Stripe, panel anti-overbooking.
+Casa del Surf (www.casadelsurf.es) — motor de reservas en producción para surf house, Stripe, panel anti-overbooking, sync con OTAs.
 Inmobiliaria Marina Carranque — portal inmobiliario, filtros, galería, CMS.
 
 PRECIOS (solo si preguntan):

@@ -93,7 +93,7 @@ npm run preview  # previsualizar el build
 
 ```
 Producción:  https://sergiolab.es
-Proyectos:   https://oudh.sergiolab.es · https://casadelsurf.vercel.app · https://inmobiliariamarinacarranque.es
+Proyectos:   https://oudh.sergiolab.es · https://www.casadelsurf.es · https://inmobiliariamarinacarranque.es
 4º (oculto): https://tools.sergiolab.es  (Laboratorio de IA, published:false hasta montarlo)
 ```
 
