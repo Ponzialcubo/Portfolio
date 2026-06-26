@@ -19,7 +19,7 @@ export const caseStudies = [
     challenge:
       'El cliente necesitaba un e-commerce completo que pudiera gestionar él mismo sin conocimientos técnicos, con pagos reales mediante tarjeta y un sistema de soporte al cliente que no requiriera personal disponible 24/7.',
     solution:
-      'Se desarrolló una tienda Next.js 14 conectada a WooCommerce como catálogo, con checkout nativo de Stripe (PaymentIntents), panel de administración completo y un chatbot de ventas con IA (API de Claude) capaz de responder preguntas sobre los productos, recomendar fragancias y guiar al usuario hasta el carrito.',
+      'Se desarrolló una tienda Next.js 14 con backend propio: catálogo, variantes, pedidos, clientes y cupones sobre una base de datos PostgreSQL (Prisma como ORM), sin depender de plugins ni de servicios de terceros. Checkout nativo de Stripe (PaymentIntents + webhook) con precios calculados en servidor, panel de administración completo y un chatbot de ventas con IA (API de Claude) que responde preguntas sobre los productos, recomienda fragancias y guía al usuario hasta el carrito. Todo autoalojado en un VPS propio con Docker.',
     results: [
       'Checkout completo con Stripe (tarjeta, Apple Pay, Google Pay)',
       'Chatbot IA que responde preguntas y guía la compra las 24h',
@@ -30,13 +30,13 @@ export const caseStudies = [
     ],
     techStack: [
       { label: 'Framework', value: 'Next.js 14 (App Router)' },
-      { label: 'Catálogo', value: 'WooCommerce REST API' },
+      { label: 'Base de datos', value: 'PostgreSQL + Prisma (backend propio)' },
       { label: 'Pagos', value: 'Stripe (PaymentIntents + Webhooks)' },
       { label: 'IA', value: 'API de Anthropic (Claude)' },
-      { label: 'Auth', value: 'NextAuth.js v4' },
+      { label: 'Auth', value: 'NextAuth.js v4 (credenciales + Google, bcrypt)' },
       { label: 'Emails', value: 'Resend' },
-      { label: 'Estado', value: 'Zustand + SWR' },
-      { label: 'Deploy', value: 'Vercel' },
+      { label: 'Estado/datos', value: 'Zustand + SWR' },
+      { label: 'Infraestructura', value: 'VPS propio · Docker + Nginx Proxy Manager' },
     ],
     seoNote: 'SEO técnico + schema.org Product/Organization. Rendimiento optimizado para Core Web Vitals en verde.',
   },

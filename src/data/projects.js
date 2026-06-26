@@ -12,14 +12,14 @@ const allProjects = [
     category: 'E-COMMERCE · IA',
     title: 'Oudh & Co — Perfumería Premium',
     description:
-      'Tienda online completa de perfumería árabe: catálogo con filtros, carrito, checkout con Stripe, chatbot con IA (Claude), panel de administración y facturación automática en PDF.',
+      'Tienda online completa de perfumería árabe con backend e infraestructura propios: catálogo con filtros, carrito, checkout con Stripe, chatbot con IA (Claude), panel de administración y facturación automática en PDF. Base de datos PostgreSQL propia y autoalojada (sin comisiones ni dependencias de terceros).',
     highlights: [
+      'Backend e infraestructura propios',
       'Pasarela de pagos Stripe',
       'Chatbot IA (Claude)',
       'Panel admin completo',
-      'Facturas PDF + analytics',
     ],
-    tech: ['Next.js 14', 'Stripe', 'WooCommerce', 'IA'],
+    tech: ['Next.js 14', 'PostgreSQL', 'Prisma', 'Stripe', 'IA'],
     accent: '#00D9FF',
     buttonText: 'Ver caso de estudio',
     href: '/proyectos/oudh-co',
