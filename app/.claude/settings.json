@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sS -o /dev/null -w \"%{http_code} -> %{url_effective}\\\\n\" -L \"https://www.casadelsurf.es\")"
+    ]
+  }
+}

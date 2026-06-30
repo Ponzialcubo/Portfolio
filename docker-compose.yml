@@ -1,0 +1,17 @@
+services:
+  web:
+    build: ./app                 # construye usando el Dockerfile de la carpeta app/
+    container_name: sergiolab
+    restart: unless-stopped
+    env_file:
+      - .env                     # carga las claves secretas desde .env
+    networks:
+      - npm                      # misma red que Nginx Proxy Manager
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+networks:
+  npm:
+    external: true
+    name: nginx-proxy_default

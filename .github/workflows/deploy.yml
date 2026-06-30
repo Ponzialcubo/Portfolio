@@ -1,0 +1,41 @@
+name: Deploy to VPS
+
+# Despliegue automático: push a main -> SSH al VPS -> git pull + rebuild.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preparar clave SSH y known_hosts
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$VPS_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Desplegar en el VPS
+        env:
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_DIR: ${{ secrets.VPS_DIR }}
+        run: |
+          VPS_USER="$(printf '%s' "$VPS_USER" | tr -d '\r')"
+          VPS_HOST="$(printf '%s' "$VPS_HOST" | tr -d '\r')"
+          VPS_DIR="$(printf '%s' "$VPS_DIR" | tr -d '\r')"
+
+          ssh -i ~/.ssh/deploy_key \
+              -o UserKnownHostsFile=~/.ssh/known_hosts \
+              "${VPS_USER}@${VPS_HOST}" \
+              "cd '${VPS_DIR}' && bash scripts/deploy-git.sh"
